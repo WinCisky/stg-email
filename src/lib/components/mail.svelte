@@ -4,32 +4,13 @@
 	import * as Tabs from "$lib/components/ui/tabs/index.js";
 	import { Separator } from "$lib/components/ui/separator/index.js";
 	import { Input } from "$lib/components/ui/input/index.js";
-    import { cn } from "$lib/utils";
 
 	export let defaultLayout = [440, 655];
-	export let defaultCollapsed = false;
-	export let navCollapsedSize: number;
-
-	let isCollapsed = defaultCollapsed;
-
-	function onLayoutChange(sizes: number[]) {
-		document.cookie = `PaneForge:layout=${JSON.stringify(sizes)}`;
-	}
-
-	function onCollapse() {
-		isCollapsed = true;
-		document.cookie = `PaneForge:collapsed=${true}`;
-	}
-
-	function onExpand() {
-		isCollapsed = false;
-		document.cookie = `PaneForge:collapsed=${false}`;
-	}
 </script>
 
 <div class="md:hidden">TODO: MOBILE</div>
 <div class="hidden md:block h-screen">
-	<Resizable.PaneGroup direction="horizontal" {onLayoutChange}>
+	<Resizable.PaneGroup direction="horizontal">
 		<Resizable.Pane defaultSize={defaultLayout[0]} minSize={30}>
 			<Tabs.Root value="all">
 				<div class="flex items-center px-4 py-2">
