@@ -44,8 +44,10 @@
 					</form>
 				</div>
 				<Tabs.Content value="all" class="m-0">
+					ALL
 				</Tabs.Content>
 				<Tabs.Content value="unread" class="m-0">
+					UNREAD
 				</Tabs.Content>
 			</Tabs.Root>
 		</Resizable.Pane>
