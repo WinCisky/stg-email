@@ -6,7 +6,7 @@
 	import { Input } from "$lib/components/ui/input/index.js";
     import { cn } from "$lib/utils";
 
-	export let defaultLayout = [265, 440, 655];
+	export let defaultLayout = [440, 655];
 	export let defaultCollapsed = false;
 	export let navCollapsedSize: number;
 
@@ -30,24 +30,7 @@
 <div class="md:hidden">TODO: MOBILE</div>
 <div class="hidden md:block h-screen">
 	<Resizable.PaneGroup direction="horizontal" {onLayoutChange}>
-		<Resizable.Pane
-			defaultSize={defaultLayout[0]}
-			collapsedSize={navCollapsedSize}
-			collapsible
-			minSize={15}
-			maxSize={20}
-			{onCollapse}
-			{onExpand}
-		>
-			<div class={cn("flex h-[52px] items-center justify-center",
-				isCollapsed ? "h-[52px]" : "px-2"
-			)}>
-				ACCOUNT
-			</div>
-			<Separator />
-		</Resizable.Pane>
-		<Resizable.Handle />
-		<Resizable.Pane defaultSize={defaultLayout[1]} minSize={30}>
+		<Resizable.Pane defaultSize={defaultLayout[0]} minSize={30}>
 			<Tabs.Root value="all">
 				<div class="flex items-center px-4 py-2">
 					<h1 class="text-xl font-bold">Inbox</h1>
@@ -80,15 +63,13 @@
 					</form>
 				</div>
 				<Tabs.Content value="all" class="m-0">
-					<!-- <MailList items={mails} /> -->
 				</Tabs.Content>
 				<Tabs.Content value="unread" class="m-0">
-					<!-- <MailList items={mails.filter((item) => !item.read)} /> -->
 				</Tabs.Content>
 			</Tabs.Root>
 		</Resizable.Pane>
 
 		<Resizable.Handle withHandle />
-		<Resizable.Pane defaultSize={defaultLayout[2]}>MAIL</Resizable.Pane>
+		<Resizable.Pane defaultSize={defaultLayout[1]}>MAIL</Resizable.Pane>
 	</Resizable.PaneGroup>
 </div>
