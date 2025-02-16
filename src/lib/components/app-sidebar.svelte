@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { base } from "$app/paths";
     import * as Sidebar from "$lib/components/ui/sidebar/index.js";
     import AccountSwitcher from "$lib/components/account-switcher.svelte";
 	import { Separator } from "$lib/components/ui/separator/index.js";
@@ -9,12 +10,12 @@
     const items = [
         {
             title: "Home",
-            url: "#",
+            url: `${base}/`,
             icon: House,
         },
         {
             title: "Inbox",
-            url: "#",
+            url: `${base}/emails`,
             icon: Inbox,
         }
     ];
