@@ -1,8 +1,7 @@
 <script lang="ts">
     import { base } from "$app/paths";
     import * as Sidebar from "$lib/components/ui/sidebar/index.js";
-    import AccountSwitcher from "$lib/components/account-switcher.svelte";
-	import { Separator } from "$lib/components/ui/separator/index.js";
+    import { Separator } from "$lib/components/ui/separator/index.js";
 
     import House from "lucide-svelte/icons/house";
     import Inbox from "lucide-svelte/icons/inbox";
@@ -17,15 +16,19 @@
             title: "Inbox",
             url: `${base}/inbox`,
             icon: Inbox,
-        }
+        },
     ];
 </script>
 
-<Sidebar.Root collapsible="icon">
+<Sidebar.Root collapsible="offcanvas">
     <Sidebar.Header>
         <Sidebar.Menu>
             <Sidebar.MenuItem>
-                <AccountSwitcher isCollapsed={false} />
+                <div class="flex items-center px-4 py-2">
+                    <h3 class="text-l font-bold">
+                        ACCOUNT NAME
+                    </h3>
+                </div>
             </Sidebar.MenuItem>
         </Sidebar.Menu>
     </Sidebar.Header>
