@@ -15,7 +15,7 @@
         },
         {
             title: "Inbox",
-            url: `${base}/emails`,
+            url: `${base}/inbox`,
             icon: Inbox,
         }
     ];
