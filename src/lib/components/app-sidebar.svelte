@@ -1,7 +1,10 @@
 <script lang="ts">
     import { base } from "$app/paths";
+    import { onMount } from "svelte";
     import * as Sidebar from "$lib/components/ui/sidebar/index.js";
     import { Separator } from "$lib/components/ui/separator/index.js";
+    import { currentAccount } from "$lib/stores/accounts.js";
+    import type { AccountCredentials } from "$lib/data.ts";
 
     import House from "lucide-svelte/icons/house";
     import Inbox from "lucide-svelte/icons/inbox";
@@ -18,6 +21,14 @@
             icon: Inbox,
         },
     ];
+
+    let account: AccountCredentials | null = null;
+
+    onMount(() => {
+        currentAccount.subscribe((value) => {
+            account = value;
+        });
+    });
 </script>
 
 <Sidebar.Root collapsible="offcanvas">
@@ -26,7 +37,7 @@
             <Sidebar.MenuItem>
                 <div class="flex items-center px-4 py-2">
                     <h3 class="text-l font-bold">
-                        ACCOUNT NAME
+                        {account?.name ?? "Account"}
                     </h3>
                 </div>
             </Sidebar.MenuItem>

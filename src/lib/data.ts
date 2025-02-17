@@ -1,9 +1,13 @@
+export type AccountCredentials = {
+    name: string;
+    password: string;
+};
 
 export type Account = {
 	name: string;
-	passowrd: string;
-    total: number;
-    unread: number;
-    last: Date;
-    lastUpdate: Date;
+	password: string;
+    total: number | null;
+    unread: number | null;
+    last: Date | null;
+    lastUpdate: Date | null;
 };
