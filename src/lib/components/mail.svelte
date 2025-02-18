@@ -4,8 +4,11 @@
 	import * as Tabs from "$lib/components/ui/tabs/index.js";
 	import { Separator } from "$lib/components/ui/separator/index.js";
 	import { Input } from "$lib/components/ui/input/index.js";
+	import MailList from "./mail-list.svelte";
+	import type { Email } from "$lib/data.ts";
 
 	export let defaultLayout = [440, 655];
+	export let mails: Email[];
 </script>
 
 <div class="md:hidden">TODO: MOBILE</div>
@@ -44,10 +47,10 @@
 					</form>
 				</div>
 				<Tabs.Content value="all" class="m-0">
-					ALL
+					<MailList items={mails} />
 				</Tabs.Content>
 				<Tabs.Content value="unread" class="m-0">
-					UNREAD
+					<MailList items={mails.filter((item) => !item.is_read)} />
 				</Tabs.Content>
 			</Tabs.Root>
 		</Resizable.Pane>

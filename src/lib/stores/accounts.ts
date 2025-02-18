@@ -1,5 +1,6 @@
 import { writable } from 'svelte/store';
 import type { Account, AccountCredentials } from '$lib/data.ts';
+import type Mail from '$lib/components/mail.svelte';
 import { browser } from '$app/environment';
 
 // accounts
@@ -35,3 +36,22 @@ currentAccount.subscribe((value) => {
         localStorage.setItem('currentAccount', JSON.stringify(value));
     }
 });
+
+// mailStore
+
+type MailStore = {
+	selected: Mail["id"] | null;
+};
+
+function createMailStore() {
+	const store = writable<MailStore>({ selected: null });
+
+	return {
+		subscribe: store.subscribe,
+		setMail: (id: Mail["id"]) => {
+			store.update((store) => ({ ...store, selected: id }));
+		},
+	};
+}
+
+export const mailStore = createMailStore();

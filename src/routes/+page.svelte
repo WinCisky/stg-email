@@ -75,13 +75,11 @@
                                     <Dialog.Content>
                                         <Dialog.Header>
                                             <Dialog.Title
-                                                >Are you sure absolutely sure?</Dialog.Title
+                                                >Delete Account?
+                                                </Dialog.Title
                                             >
                                             <Dialog.Description>
-                                                This action will only remove the
-                                                account from your home listing.
-                                                No emails will be deleted in the
-                                                process.
+                                                This will remove the account from your list.
                                             </Dialog.Description>
                                         </Dialog.Header>
                                         <Dialog.Footer>
