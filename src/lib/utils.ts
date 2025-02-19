@@ -58,3 +58,8 @@ export function formatTimeAgo(date: Date) {
 		duration /= division.amount;
 	}
 }
+
+export function stripHtml(html: string) {
+	let doc = new DOMParser().parseFromString(html, 'text/html');
+	return doc.body.textContent || "";
+}

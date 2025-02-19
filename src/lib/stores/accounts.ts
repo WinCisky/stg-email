@@ -2,6 +2,7 @@ import { writable } from 'svelte/store';
 import type { Account, AccountCredentials } from '$lib/data.ts';
 import type Mail from '$lib/components/mail.svelte';
 import { browser } from '$app/environment';
+import type { Email } from '$lib/data';
 
 // accounts
 
@@ -55,3 +56,7 @@ function createMailStore() {
 }
 
 export const mailStore = createMailStore();
+
+// emails
+
+export const emails = writable<Email[]>([]);

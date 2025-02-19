@@ -4,10 +4,7 @@
 	import AppSidebar from "$lib/components/app-sidebar.svelte";
     import PostalMime from "postal-mime";
 	import { onMount } from "svelte";
-    import { writable } from "svelte/store";
-    import type { Email } from "$lib/data";
-
-	const emails = writable<Email[]>([]);
+    import { emails } from "$lib/stores/accounts.js";
 
 	const apiData = [
 		{
@@ -25,10 +22,8 @@
 	];
 
 	onMount(async () => {
-        console.log("mounted");
         for (const email of apiData) {
             const parsed = await PostalMime.parse(email.content);
-			console.log(parsed);
             emails.update((emails) => [...emails, { ...parsed, is_read: email.is_read }]);
         }
     });
@@ -38,6 +33,6 @@
 <Sidebar.Provider>
 	<AppSidebar />
 	<main class="w-full">
-        <Mail mails={$emails} />
+        <Mail />
 	</main>
 </Sidebar.Provider>

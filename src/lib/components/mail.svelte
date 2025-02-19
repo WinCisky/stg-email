@@ -5,10 +5,10 @@
 	import { Separator } from "$lib/components/ui/separator/index.js";
 	import { Input } from "$lib/components/ui/input/index.js";
 	import MailList from "./mail-list.svelte";
-	import type { Email } from "$lib/data.ts";
 
 	export let defaultLayout = [440, 655];
-	export let mails: Email[];
+
+	let search = "";
 </script>
 
 <div class="md:hidden">TODO: MOBILE</div>
@@ -42,15 +42,15 @@
 							<Search
 								class="text-muted-foreground absolute left-2 top-[50%] h-4 w-4 translate-y-[-50%]"
 							/>
-							<Input placeholder="Search" class="pl-8" />
+							<Input placeholder="Search" class="pl-8" bind:value={search} />
 						</div>
 					</form>
 				</div>
 				<Tabs.Content value="all" class="m-0">
-					<MailList items={mails} />
+					<MailList isUnreadOnly={false} search={search} />
 				</Tabs.Content>
 				<Tabs.Content value="unread" class="m-0">
-					<MailList items={mails.filter((item) => !item.is_read)} />
+					<MailList isUnreadOnly={true} search={search} />
 				</Tabs.Content>
 			</Tabs.Root>
 		</Resizable.Pane>
