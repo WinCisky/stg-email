@@ -5,6 +5,8 @@
 	import { Separator } from "$lib/components/ui/separator/index.js";
 	import { Input } from "$lib/components/ui/input/index.js";
 	import MailList from "./mail-list.svelte";
+	import MailDisplay from "./mail-display.svelte";
+    import { emails, mailStore } from "$lib/stores/accounts.js";
 
 	export let defaultLayout = [440, 655];
 
@@ -56,6 +58,8 @@
 		</Resizable.Pane>
 
 		<Resizable.Handle withHandle />
-		<Resizable.Pane defaultSize={defaultLayout[1]}>MAIL</Resizable.Pane>
+		<Resizable.Pane defaultSize={defaultLayout[1]}>
+			<MailDisplay mail={$emails.find((item) => item.messageId === $mailStore.selected) || null} />
+		</Resizable.Pane>
 	</Resizable.PaneGroup>
 </div>
