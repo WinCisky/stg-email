@@ -9,6 +9,7 @@
     import * as Tabs from "$lib/components/ui/tabs/index.js";
     import * as Card from "$lib/components/ui/card/index.js";
     import * as Dialog from "$lib/components/ui/dialog/index.js";
+    import { Skeleton } from "$lib/components/ui/skeleton/index.js";
     import { timeSince } from "$lib/utils.js";
 
     let accountList: Account[] = [];
@@ -36,8 +37,7 @@
     }
 </script>
 
-<div class="md:hidden">TODO: MOBILE</div>
-<div class="hidden flex-col md:flex">
+<div class="flex flex-col">
     <div class="flex-1 space-y-4 p-8 pt-6">
         <div class="flex items-center justify-between space-y-2">
             <h2 class="text-3xl font-bold tracking-tight">Dashboard</h2>
@@ -76,10 +76,10 @@
                                         <Dialog.Header>
                                             <Dialog.Title
                                                 >Delete Account?
-                                                </Dialog.Title
-                                            >
+                                            </Dialog.Title>
                                             <Dialog.Description>
-                                                This will remove the account from your list.
+                                                This will remove the account
+                                                from your list.
                                             </Dialog.Description>
                                         </Dialog.Header>
                                         <Dialog.Footer>
@@ -102,7 +102,13 @@
                                     })}
                             >
                                 <div class="text-2xl font-bold">
-                                    {account.total ?? "no"} emails
+                                    <div class="flex items-baseline gap-4">
+                                        <span>
+                                            {account.total ?? "no"} emails
+                                        </span>
+                                        <Skeleton class="h-4 w-4 rounded-full" />
+                                        <div class="h-4 w-4 rounded-full bg-green-400"></div>
+                                    </div>
                                 </div>
                                 <p class="text-muted-foreground text-xs">
                                     last email {account.last

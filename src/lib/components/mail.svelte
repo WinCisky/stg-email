@@ -5,10 +5,7 @@
 	import { Separator } from "$lib/components/ui/separator/index.js";
 	import { Input } from "$lib/components/ui/input/index.js";
 	import MailList from "./mail-list.svelte";
-	import MailDisplay from "./mail-display.svelte";
-    import { emails, mailStore } from "$lib/stores/accounts.js";
-
-	export let defaultLayout = [440, 655];
+	import MailDisplayDashboard from "./mail-display-dashboard.svelte";
 
 	let search = "";
 </script>
@@ -16,7 +13,7 @@
 <div class="md:hidden">TODO: MOBILE</div>
 <div class="hidden md:block h-screen">
 	<Resizable.PaneGroup direction="horizontal">
-		<Resizable.Pane defaultSize={defaultLayout[0]} minSize={30}>
+		<Resizable.Pane defaultSize={30} minSize={20} maxSize={40}>
 			<Tabs.Root value="all">
 				<div class="flex items-center px-4 py-2">
 					<h1 class="text-xl font-bold">Inbox</h1>
@@ -58,8 +55,8 @@
 		</Resizable.Pane>
 
 		<Resizable.Handle withHandle />
-		<Resizable.Pane defaultSize={defaultLayout[1]}>
-			<MailDisplay mail={$emails.find((item) => item.messageId === $mailStore.selected) || null} />
+		<Resizable.Pane defaultSize={70}>
+			<MailDisplayDashboard />
 		</Resizable.Pane>
 	</Resizable.PaneGroup>
 </div>

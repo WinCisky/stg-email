@@ -41,18 +41,18 @@ currentAccount.subscribe((value) => {
 // mailStore
 
 type MailStore = {
-	selected: Mail["id"] | null;
+    selected: Email | null;
 };
 
 function createMailStore() {
-	const store = writable<MailStore>({ selected: null });
+    const store = writable<MailStore>({ selected: null });
 
-	return {
-		subscribe: store.subscribe,
-		setMail: (id: Mail["id"]) => {
-			store.update((store) => ({ ...store, selected: id }));
-		},
-	};
+    return {
+        subscribe: store.subscribe,
+        setMail: (email: Email) => {
+            store.update((store) => ({ ...store, selected: email }));
+        },
+    };
 }
 
 export const mailStore = createMailStore();

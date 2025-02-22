@@ -33,10 +33,10 @@
 			<button
 				class={cn(
 					"hover:bg-accent flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all",
-					$mailStore.selected === email.messageId && "bg-muted"
+					$mailStore.selected?.messageId === email.messageId && "bg-muted"
 				)}
 				onclick={() => {
-					mailStore.setMail(email.messageId)
+					mailStore.setMail(email)
 					markEmailAsRead(email.messageId)
 				}}
 			>
@@ -51,7 +51,7 @@
 						<div
 							class={cn(
 								"ml-auto text-xs",
-								$mailStore.selected === email.messageId
+								$mailStore.selected?.messageId === email.messageId
 									? "text-foreground"
 									: "text-muted-foreground"
 							)}
