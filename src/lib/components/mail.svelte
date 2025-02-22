@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { base } from "$app/paths";
 	import Search from "lucide-svelte/icons/search";
 	import * as Resizable from "$lib/components/ui/resizable/index.js";
 	import * as Tabs from "$lib/components/ui/tabs/index.js";
@@ -6,14 +7,25 @@
 	import { Input } from "$lib/components/ui/input/index.js";
 	import MailList from "./mail-list.svelte";
 	import MailDisplayDashboard from "./mail-display-dashboard.svelte";
+	import Home from "lucide-svelte/icons/home";
+	import { Button } from "$lib/components/ui/button/index.js";
 
-	let search = "";
+	let search = $state("");
 </script>
 
 <div class="md:hidden">TODO: MOBILE</div>
 <div class="hidden md:block h-screen">
 	<Resizable.PaneGroup direction="horizontal">
-		<Resizable.Pane defaultSize={30} minSize={20} maxSize={40}>
+		<div class="flex flex-col">
+			<div class="p-2">
+				<Button href={`${base}/`} variant="outline" size="icon">
+					<Home />
+				</Button>
+			</div>
+			<Separator />
+		</div>
+		<Separator orientation="vertical" />
+		<Resizable.Pane defaultSize={25} minSize={15} maxSize={35}>
 			<Tabs.Root value="all">
 				<div class="flex items-center px-4 py-2">
 					<h1 class="text-xl font-bold">Inbox</h1>
@@ -41,21 +53,25 @@
 							<Search
 								class="text-muted-foreground absolute left-2 top-[50%] h-4 w-4 translate-y-[-50%]"
 							/>
-							<Input placeholder="Search" class="pl-8" bind:value={search} />
+							<Input
+								placeholder="Search"
+								class="pl-8"
+								bind:value={search}
+							/>
 						</div>
 					</form>
 				</div>
 				<Tabs.Content value="all" class="m-0">
-					<MailList isUnreadOnly={false} search={search} />
+					<MailList isUnreadOnly={false} {search} />
 				</Tabs.Content>
 				<Tabs.Content value="unread" class="m-0">
-					<MailList isUnreadOnly={true} search={search} />
+					<MailList isUnreadOnly={true} {search} />
 				</Tabs.Content>
 			</Tabs.Root>
 		</Resizable.Pane>
 
 		<Resizable.Handle withHandle />
-		<Resizable.Pane defaultSize={70}>
+		<Resizable.Pane defaultSize={65}>
 			<MailDisplayDashboard />
 		</Resizable.Pane>
 	</Resizable.PaneGroup>
