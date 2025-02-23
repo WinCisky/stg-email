@@ -11,16 +11,37 @@
     import * as Dialog from "$lib/components/ui/dialog/index.js";
     import { Skeleton } from "$lib/components/ui/skeleton/index.js";
     import { timeSince } from "$lib/utils.js";
+    import { getAccountsStatsFromApi } from "$lib/api";
 
-    let accountList: Account[] = [];
-    let account: AccountCredentials | null = null;
+    let accountList: Account[] = $state([]);
+    let account: AccountCredentials | null = $state(null);
 
-    onMount(() => {
+    onMount(async () => {
         accounts.subscribe((value) => {
             accountList = Array.from(value);
         });
         currentAccount.subscribe((value) => {
             account = value;
+        });
+
+        const accountsCredentials = accountList.map((a) => {
+            return { username: a.name, password: a.password };
+        });
+        const accountStats = await getAccountsStatsFromApi(accountsCredentials);
+        accountList = accountList.map((a) => {
+            const stats = accountStats.find(
+                (s: {
+                    username: string;
+                    password: string;
+                    totalEmails: number;
+                    lastEmailDate: string;
+                }) => s.username === a.name && s.password === a.password,
+            );
+            return {
+                ...a,
+                total: stats?.total,
+                last: stats?.last,
+            };
         });
     });
 
@@ -106,8 +127,12 @@
                                         <span>
                                             {account.total ?? "no"} emails
                                         </span>
-                                        <Skeleton class="h-4 w-4 rounded-full" />
-                                        <div class="h-4 w-4 rounded-full bg-green-400"></div>
+                                        <Skeleton
+                                            class="h-4 w-4 rounded-full"
+                                        />
+                                        <div
+                                            class="h-4 w-4 rounded-full bg-green-400"
+                                        ></div>
                                     </div>
                                 </div>
                                 <p class="text-muted-foreground text-xs">
