@@ -34,9 +34,9 @@
                         disabled={!$mailStore.selected}
                     >
                         <Trash2 class="size-4" />
-                        <span class="sr-only">Move to trash</span>
+                        <span class="sr-only">Delete</span>
                     </Tooltip.Trigger>
-                    <Tooltip.Content>Move to trash</Tooltip.Content>
+                    <Tooltip.Content>Delete</Tooltip.Content>
                 </Tooltip.Root>
                 <!-- <Separator orientation="vertical" class="mx-1 h-6" /> -->
             </div>

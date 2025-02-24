@@ -5,9 +5,10 @@ export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
 }
 
-export function timeSince(date: Date) {
+export function timeSince(date: string) {
 	var now = new Date();
-	var seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+	const parsedDate = new Date(date);
+	var seconds = Math.floor((now.getTime() - parsedDate.getTime()) / 1000);
 
 	var interval = seconds / 31536000;
 

@@ -9,8 +9,7 @@ export type Account = {
 	name: string;
 	password: string;
     total: number | null;
-    unread: number | null;
-    last: Date | null;
+    last: string | null;
     lastUpdate: Date | null;
 };
 
