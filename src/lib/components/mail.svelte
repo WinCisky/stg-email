@@ -8,6 +8,7 @@
 	import MailList from "./mail-list.svelte";
 	import MailDisplayDashboard from "./mail-display-dashboard.svelte";
 	import Home from "lucide-svelte/icons/home";
+	import Flame from "lucide-svelte/icons/flame";
 	import { Button } from "$lib/components/ui/button/index.js";
 
 	let search = $state("");
@@ -16,13 +17,22 @@
 <div class="md:hidden">TODO: MOBILE</div>
 <div class="hidden md:block h-screen">
 	<Resizable.PaneGroup direction="horizontal">
-		<div class="flex flex-col">
-			<div class="p-2">
-				<Button href={`${base}/`} variant="outline" size="icon">
-					<Home />
-				</Button>
+		<div class="flex flex-col justify-between">
+			<div>
+				<div class="p-2">
+					<Button href={`${base}/`} variant="outline" size="icon">
+						<Home />
+					</Button>
+				</div>
+				<Separator />
 			</div>
-			<Separator />
+			<div>
+				<div class="p-2">
+					<Button variant="outline" size="icon">
+						<Flame />
+					</Button>
+				</div>
+			</div>
 		</div>
 		<Separator orientation="vertical" />
 		<Resizable.Pane defaultSize={25} minSize={15} maxSize={35}>
