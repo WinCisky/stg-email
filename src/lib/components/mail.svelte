@@ -3,6 +3,7 @@
 	import Search from "lucide-svelte/icons/search";
 	import * as Resizable from "$lib/components/ui/resizable/index.js";
 	import * as Tabs from "$lib/components/ui/tabs/index.js";
+    import * as Dialog from "$lib/components/ui/dialog/index.js";
 	import { Separator } from "$lib/components/ui/separator/index.js";
 	import { Input } from "$lib/components/ui/input/index.js";
 	import MailList from "./mail-list.svelte";
@@ -10,16 +11,27 @@
 	import Home from "lucide-svelte/icons/home";
 	import Flame from "lucide-svelte/icons/flame";
 	import { Button } from "$lib/components/ui/button/index.js";
+	import { currentAccount, emails, mailStore } from "$lib/stores/accounts";
+    import { postBurnAccount } from "$lib/api";
 
 	let { loadMoreEmails } = $props();
 
 	let search = $state("");
+	let isBurnDialogOpen = $state(false);
+	
+    async function burnSelectedAccount() {
+        if (!$currentAccount) return;
+        await postBurnAccount($currentAccount.name, $currentAccount.password);
+		mailStore.clearMail();
+        isBurnDialogOpen = false;
+		$emails = [];
+    }
 </script>
 
 <div class="md:hidden">TODO: MOBILE</div>
 <div class="hidden md:block h-screen">
 	<Resizable.PaneGroup direction="horizontal">
-		<div class="flex flex-col justify-between">
+		<div class="flex flex-col">
 			<div>
 				<div class="p-2">
 					<Button href={`${base}/`} variant="outline" size="icon">
@@ -30,7 +42,7 @@
 			</div>
 			<div>
 				<div class="p-2">
-					<Button variant="outline" size="icon">
+					<Button variant="outline" size="icon" onclick={() => isBurnDialogOpen = true}>
 						<Flame />
 					</Button>
 				</div>
@@ -87,4 +99,18 @@
 			<MailDisplayDashboard />
 		</Resizable.Pane>
 	</Resizable.PaneGroup>
+	
+	<Dialog.Root bind:open={isBurnDialogOpen}>
+		<Dialog.Content>
+			<Dialog.Header>
+				<Dialog.Title>Burn Account?</Dialog.Title>
+				<Dialog.Description>
+					This will remove all emails from the account.
+				</Dialog.Description>
+			</Dialog.Header>
+			<Dialog.Footer>
+				<Button onclick={() => burnSelectedAccount()}>Burn</Button>
+			</Dialog.Footer>
+		</Dialog.Content>
+	</Dialog.Root>
 </div>

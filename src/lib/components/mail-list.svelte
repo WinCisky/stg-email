@@ -4,6 +4,7 @@
 	import { ScrollArea } from "$lib/components/ui/scroll-area/index.js";
 	import { emails, isLoadingEmails, currentAccount } from "$lib/stores/accounts.js";
     import { patchMarkEmailAsRead } from "$lib/api";
+    import { onMount } from "svelte";
 
 	let { isUnreadOnly, search, loadMoreEmails } = $props();
 
@@ -65,6 +66,10 @@
             }
         }
     }
+
+	onMount(async () => {
+		await loadMoreEmails();
+	});
 </script>
 
 <div class="h-full max-h-full overflow-hidden">

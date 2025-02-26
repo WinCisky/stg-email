@@ -1,6 +1,5 @@
 import { writable } from 'svelte/store';
 import type { Account, AccountCredentials } from '$lib/data.ts';
-import type Mail from '$lib/components/mail.svelte';
 import { browser } from '$app/environment';
 import type { Email } from '$lib/data';
 
@@ -52,6 +51,9 @@ function createMailStore() {
         setMail: (email: Email) => {
             store.update((store) => ({ ...store, selected: email }));
         },
+        clearMail: () => {
+            store.update((store) => ({ ...store, selected: null }));
+        }
     };
 }
 
