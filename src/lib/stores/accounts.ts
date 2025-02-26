@@ -60,3 +60,6 @@ export const mailStore = createMailStore();
 // emails
 
 export const emails = writable<Email[]>([]);
+
+export const currentPageEmails = writable(1);
+export const isLoadingEmails = writable(false);

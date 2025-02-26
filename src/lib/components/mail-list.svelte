@@ -2,11 +2,12 @@
 	import { mailStore } from "$lib/stores/accounts.js";
 	import { cn, formatTimeAgo, stripHtml } from "$lib/utils.js";
 	import { ScrollArea } from "$lib/components/ui/scroll-area/index.js";
-	import { emails } from "$lib/stores/accounts.js";
+	import { emails, isLoadingEmails } from "$lib/stores/accounts.js";
 
-	let { isUnreadOnly, search } = $props();
+	let { isUnreadOnly, search, loadMoreEmails } = $props();
 
 	let isFetchingEmails = $state(false);
+    let hasMoreEmails = $state(true);
 
 	const searchedEmails = $derived.by(() => {
 		return $emails.filter((email) => {
@@ -34,13 +35,21 @@
 		// TODO: api call to update email as read in the db
 	}
 
-	function onScrollbarScroll(event: { scrollBot: number }) {
-		if (event.scrollBot < 100 && !isFetchingEmails) {
-			isFetchingEmails = true;
-			console.log("fetch more emails");
-			// TODO: fetch more emails
-		}
-	}
+	async function onScrollbarScroll(event: { scrollBot: number }) {
+        // Carica altre email quando l'utente si avvicina al fondo della lista
+        if (event.scrollBot < 100 && !isFetchingEmails && hasMoreEmails && !$isLoadingEmails) {
+            isFetchingEmails = true;
+            
+            try {
+                const hasMore = await loadMoreEmails();
+                hasMoreEmails = hasMore;
+            } catch (error) {
+                console.error("Error loading more emails:", error);
+            } finally {
+                isFetchingEmails = false;
+            }
+        }
+    }
 </script>
 
 <div class="h-full max-h-full overflow-hidden">

@@ -11,6 +11,8 @@
 	import Flame from "lucide-svelte/icons/flame";
 	import { Button } from "$lib/components/ui/button/index.js";
 
+	let { loadMoreEmails } = $props();
+
 	let search = $state("");
 </script>
 
@@ -72,10 +74,10 @@
 					</form>
 				</div>
 				<Tabs.Content value="all" class="m-0">
-					<MailList isUnreadOnly={false} {search} />
+					<MailList isUnreadOnly={false} {search} {loadMoreEmails} />
 				</Tabs.Content>
 				<Tabs.Content value="unread" class="m-0">
-					<MailList isUnreadOnly={true} {search} />
+					<MailList isUnreadOnly={true} {search} {loadMoreEmails} />
 				</Tabs.Content>
 			</Tabs.Root>
 		</Resizable.Pane>
