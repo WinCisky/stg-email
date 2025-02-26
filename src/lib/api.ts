@@ -14,7 +14,7 @@ export async function getAccountsStatsFromApi(accounts: { username: string, pass
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({accounts: accounts})
+        body: JSON.stringify(accounts)
     });
     if (!response.ok) {
         throw new Error('Failed to fetch accounts stats');
@@ -32,6 +32,21 @@ export async function postBurnAccount(username: string, password: string) {
     });
     if (!response.ok) {
         throw new Error('Failed to burn account');
+    }
+    return response.json();
+}
+
+// send a patch request to the api to mark an email as read
+export async function patchMarkEmailAsRead(emailId: number, username: string, password: string) {
+    const response = await fetch(`${ENDPOINT}/emails/read/${emailId}`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({username, password})
+    });
+    if (!response.ok) {
+        throw new Error('Failed to mark email as read');
     }
     return response.json();
 }

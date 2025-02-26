@@ -22,8 +22,6 @@
                 throw new Error("Selected account not found!");
             }
 
-            console.log("Loading emails for page", page);
-
             const apiData = await getEmailsFromApi(
                 $currentAccount.name,
                 $currentAccount.password,
@@ -39,7 +37,7 @@
                 const parsed = await PostalMime.parse(email.content);
                 emails.update((emails) => [
                     ...emails,
-                    { ...parsed, is_read: email.is_read },
+                    { ...parsed, is_read: email.is_read == 1, id: email.id },
                 ]);
             }
 

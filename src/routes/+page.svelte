@@ -12,6 +12,7 @@
     import * as Card from "$lib/components/ui/card/index.js";
     import * as Dialog from "$lib/components/ui/dialog/index.js";
     import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
+    import { ScrollArea } from "$lib/components/ui/scroll-area/index.js";
     import { Skeleton } from "$lib/components/ui/skeleton/index.js";
     import { timeSince } from "$lib/utils.js";
     import { getAccountsStatsFromApi, postBurnAccount } from "$lib/api";
@@ -298,7 +299,9 @@ MAIL_PASSWORD=password`;
                     </Card.Title>
                 </Card.Header>
                 <Card.Content>
-                    <pre class="text-sm"><code>{codeContent}</code></pre>
+                    <ScrollArea class="w-full" orientation="horizontal">
+                        <pre class="text-sm"><code>{codeContent}</code></pre>
+                    </ScrollArea>
                 </Card.Content>
             </Card.Root>
         </div>

@@ -15,4 +15,5 @@ export type Account = {
 
 export interface Email extends PostalMimeEmail {
     is_read: boolean;
+    id: number;
 }

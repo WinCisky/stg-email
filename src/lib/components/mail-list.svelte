@@ -2,7 +2,8 @@
 	import { mailStore } from "$lib/stores/accounts.js";
 	import { cn, formatTimeAgo, stripHtml } from "$lib/utils.js";
 	import { ScrollArea } from "$lib/components/ui/scroll-area/index.js";
-	import { emails, isLoadingEmails } from "$lib/stores/accounts.js";
+	import { emails, isLoadingEmails, currentAccount } from "$lib/stores/accounts.js";
+    import { patchMarkEmailAsRead } from "$lib/api";
 
 	let { isUnreadOnly, search, loadMoreEmails } = $props();
 
@@ -30,9 +31,23 @@
 	function markEmailAsRead(id: string) {
 		const emailIndex = $emails.findIndex((email) => email.messageId === id);
 		if (emailIndex === -1) return;
-		$emails[emailIndex].is_read = true;
-		$emails = [...$emails];
-		// TODO: api call to update email as read in the db
+		// Crea una copia dell'email con is_read impostato a true
+		const updatedEmail = { ...$emails[emailIndex], is_read: true };
+    
+		// Crea un nuovo array di email sostituendo quella modificata
+		const updatedEmails = [
+			...$emails.slice(0, emailIndex),
+			updatedEmail,
+			...$emails.slice(emailIndex + 1)
+		];
+		
+		// Aggiorna lo store con il nuovo array
+		emails.set(updatedEmails);
+		// api call to update email as read in the db
+		if ($currentAccount) {
+			const email = $emails[emailIndex];
+			patchMarkEmailAsRead(email.id, $currentAccount.name, $currentAccount.password);
+		}
 	}
 
 	async function onScrollbarScroll(event: { scrollBot: number }) {
@@ -59,7 +74,7 @@
 		scroll={onScrollbarScroll}
 	>
 		<div class="flex flex-col gap-2 p-4 pt-0">
-			{#each emailItems as email}
+			{#each emailItems as email (email.messageId)}
 				<button
 					class={cn(
 						"hover:bg-accent flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all",
@@ -77,7 +92,7 @@
 								<div class="font-semibold">
 									{email.from.name ?? email.from.address}
 								</div>
-								{#if !email.is_read}
+								{#if (!email.is_read)}
 									<span
 										class="flex h-2 w-2 rounded-full bg-blue-600"
 									></span>
