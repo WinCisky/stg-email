@@ -10,14 +10,25 @@
     import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
     import { Separator } from "$lib/components/ui/separator/index.js";
     import * as Tooltip from "$lib/components/ui/tooltip/index.js";
+    import { Badge } from "$lib/components/ui/badge/index.js";
 
     import MailDisplayContent from "./mail-display-content.svelte";
     import { mailStore } from "$lib/stores/accounts.js";
+    import type { Attachment } from "postal-mime";
 
     const fullFormatter = new DateFormatter("en-US", {
         dateStyle: "medium",
         timeStyle: "medium",
     });
+
+    function downloadAttachment(attachment: Attachment) {
+        const url = URL.createObjectURL(new Blob([attachment.content]));
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = attachment.filename ?? "attachment";
+        a.click();
+        URL.revokeObjectURL(url);
+    }
 </script>
 
 <Tooltip.Provider delayDuration={0}>
@@ -134,6 +145,15 @@
                                     {$mailStore.selected.replyTo
                                         .map((replyTo) => replyTo.address)
                                         .join(", ")}
+                                </div>
+                            {/if}
+                            {#if $mailStore.selected.attachments.length > 0}
+                                <div class="mt-2">
+                                    {#each $mailStore.selected.attachments as attachment}
+                                        <Badge class="cursor-pointer" variant="outline" onclick={() => downloadAttachment(attachment)}>
+                                            {attachment.filename}
+                                        </Badge>
+                                    {/each}
                                 </div>
                             {/if}
                         </div>
