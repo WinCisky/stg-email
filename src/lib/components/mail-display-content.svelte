@@ -1,6 +1,8 @@
 <script lang="ts">
     import * as Tabs from "$lib/components/ui/tabs/index.js";
     import * as ToggleGroup from "$lib/components/ui/toggle-group/index.js";
+    import * as Table from "$lib/components/ui/table/index.js";
+    import { mailStore } from "$lib/stores/accounts.js";
 
     import Monitor from "lucide-svelte/icons/monitor";
     import Tablet from "lucide-svelte/icons/tablet";
@@ -9,7 +11,7 @@
     import ShadowContentHtml from "./shadow-content-html.svelte";
 
     let selectedTab: string = $state("html");
-    let selectedResolution: 'desktop' | 'tablet' | 'mobile' = $state("desktop");
+    let selectedResolution: "desktop" | "tablet" | "mobile" = $state("desktop");
 </script>
 
 <Tabs.Root class="w-full" bind:value={selectedTab}>
@@ -46,10 +48,27 @@
         {/if}
     </div>
     <Tabs.Content value="html">
-        <ShadowContentHtml selectedResolution={selectedResolution} />
+        <ShadowContentHtml {selectedResolution} />
     </Tabs.Content>
     <Tabs.Content value="source">SOURCE CONTENT</Tabs.Content>
     <Tabs.Content value="text">TEXT CONTENT</Tabs.Content>
     <Tabs.Content value="raw">RAW CONTENT</Tabs.Content>
-    <Tabs.Content value="headers">HEADERS CONTENT</Tabs.Content>
+    <Tabs.Content value="headers">
+        <Table.Root>
+            <Table.Header>
+                <Table.Row>
+                    <Table.Head>Key</Table.Head>
+                    <Table.Head>Value</Table.Head>
+                </Table.Row>
+            </Table.Header>
+            <Table.Body>
+                {#each $mailStore.selected?.headers ?? [] as header}
+                    <Table.Row>
+                        <Table.Cell>{header.key}</Table.Cell>
+                        <Table.Cell>{header.value}</Table.Cell>
+                    </Table.Row>
+                {/each}
+            </Table.Body>
+        </Table.Root>
+    </Tabs.Content>
 </Tabs.Root>
