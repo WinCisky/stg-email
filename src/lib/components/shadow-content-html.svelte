@@ -38,6 +38,8 @@
     }`}
 >
     <Card.Content>
-        <div class="bg-white" bind:this={shadowHost}></div>
+        <div class="bg-white">
+            <div bind:this={shadowHost}></div>
+        </div>
     </Card.Content>
 </Card.Root>

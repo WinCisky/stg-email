@@ -28,6 +28,12 @@
     }
 
     mailStore.subscribe((value) => {
+        if (value.selected?.text) {
+            selectedTab = "text";
+        }
+        if (value.selected?.html) {
+            selectedTab = "html";
+        }
         if (editorView) {
             editorView.dispatch({
                 changes: {
@@ -62,9 +68,15 @@
 <Tabs.Root class="w-full" bind:value={selectedTab}>
     <div class="flex justify-between w-full">
         <Tabs.List>
-            <Tabs.Trigger value="html">Html</Tabs.Trigger>
-            <Tabs.Trigger value="source">Source</Tabs.Trigger>
-            <Tabs.Trigger value="text">Text</Tabs.Trigger>
+            <Tabs.Trigger value="html" disabled={!$mailStore.selected?.html}>
+                Html
+            </Tabs.Trigger>
+            <Tabs.Trigger value="source" disabled={!$mailStore.selected?.html}>
+                Source
+            </Tabs.Trigger>
+            <Tabs.Trigger value="text" disabled={!$mailStore.selected?.text}>
+                Text
+            </Tabs.Trigger>
             <Tabs.Trigger value="raw">Raw</Tabs.Trigger>
             <Tabs.Trigger value="headers">Headers</Tabs.Trigger>
         </Tabs.List>
@@ -102,7 +114,15 @@
             </Card.Content>
         </Card.Root>
     </Tabs.Content>
-    <Tabs.Content value="text">TEXT CONTENT</Tabs.Content>
+    <Tabs.Content value="text">
+        <Card.Root>
+            <Card.Content>
+                <div>
+                    {$mailStore.selected?.text}
+                </div>
+            </Card.Content>
+        </Card.Root>
+    </Tabs.Content>
     <Tabs.Content value="raw">
         <Card.Root>
             <Card.Content>
