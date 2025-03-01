@@ -66,10 +66,6 @@
             }
         }
     }
-
-	onMount(async () => {
-		await loadMoreEmails();
-	});
 </script>
 
 <div class="h-full max-h-full overflow-hidden">

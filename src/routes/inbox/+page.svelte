@@ -35,15 +35,28 @@
 
             for (const email of apiData) {
                 const parsed = await PostalMime.parse(email.content);
-                emails.update((emails) => [
-                    ...emails,
+                emails.update((currentEmails) => {
+                const index = currentEmails.findIndex((e) => e.id === email.id);
+                if (index !== -1) {
+                    const updatedEmails = [...currentEmails];
+                    updatedEmails[index] = {
+                        ...parsed,
+                        is_read: email.is_read == 1,
+                        id: email.id,
+                        raw: email.content,
+                    };
+                    return updatedEmails;
+                }
+                return [
+                    ...currentEmails,
                     {
                         ...parsed,
                         is_read: email.is_read == 1,
                         id: email.id,
                         raw: email.content,
                     },
-                ]);
+                ];
+            });
             }
 
             return apiData.length === emailsPerPage;

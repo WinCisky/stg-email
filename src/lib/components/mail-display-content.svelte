@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { mode, setMode } from "mode-watcher";
+    import { mode } from "mode-watcher";
     import * as Tabs from "$lib/components/ui/tabs/index.js";
     import * as ToggleGroup from "$lib/components/ui/toggle-group/index.js";
     import * as Table from "$lib/components/ui/table/index.js";
@@ -17,6 +17,7 @@
     import Smartphone from "lucide-svelte/icons/smartphone";
 
     import ShadowContentHtml from "./shadow-content-html.svelte";
+    import Spam from "./spam.svelte";
     import { onMount } from "svelte";
 
     let selectedTab: string = $state("html");
@@ -78,6 +79,7 @@
                 Text
             </Tabs.Trigger>
             <Tabs.Trigger value="raw">Raw</Tabs.Trigger>
+            <Tabs.Trigger value="spam">Spam</Tabs.Trigger>
             <Tabs.Trigger value="headers">Headers</Tabs.Trigger>
         </Tabs.List>
 
@@ -129,6 +131,9 @@
                 <pre>{escapeHTML($mailStore.selected?.raw ?? "")}</pre>
             </Card.Content>
         </Card.Root>
+    </Tabs.Content>
+    <Tabs.Content value="spam">
+        <Spam />
     </Tabs.Content>
     <Tabs.Content value="headers">
         <Card.Root>

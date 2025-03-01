@@ -9,6 +9,8 @@
 	import MailList from "./mail-list.svelte";
 	import MailDisplayDashboard from "./mail-display-dashboard.svelte";
 	import Home from "lucide-svelte/icons/home";
+	import Refresh from "lucide-svelte/icons/refresh-cw";
+	import ReadAll from "lucide-svelte/icons/mail-check";
 	import Flame from "lucide-svelte/icons/flame";
 	import { Button } from "$lib/components/ui/button/index.js";
 	import { currentAccount, emails, mailStore } from "$lib/stores/accounts";
@@ -41,7 +43,13 @@
 				<Separator />
 			</div>
 			<div>
-				<div class="p-2">
+				<div class="p-2 flex flex-col space-y-2">
+					<Button variant="outline" size="icon" onclick={() => isBurnDialogOpen = true}>
+						<Refresh />
+					</Button>
+					<Button variant="outline" size="icon" onclick={() => isBurnDialogOpen = true}>
+						<ReadAll />
+					</Button>
 					<Button variant="outline" size="icon" onclick={() => isBurnDialogOpen = true}>
 						<Flame />
 					</Button>

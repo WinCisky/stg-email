@@ -29,7 +29,7 @@
 </script>
 
 <Card.Root
-    class={`mx-auto transition-all duration-500 overflow-auto ${
+    class={`mx-auto transition-all duration-500 ${
         selectedResolution === "desktop"
             ? "max-w-full"
             : selectedResolution === "tablet"
@@ -38,7 +38,7 @@
     }`}
 >
     <Card.Content>
-        <div class="bg-white">
+        <div class="bg-white overflow-auto">
             <div bind:this={shadowHost}></div>
         </div>
     </Card.Content>
