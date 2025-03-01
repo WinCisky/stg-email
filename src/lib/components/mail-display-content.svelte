@@ -2,7 +2,9 @@
     import * as Tabs from "$lib/components/ui/tabs/index.js";
     import * as ToggleGroup from "$lib/components/ui/toggle-group/index.js";
     import * as Table from "$lib/components/ui/table/index.js";
+    import * as Card from "$lib/components/ui/card/index.js";
     import { mailStore } from "$lib/stores/accounts.js";
+    import he from 'he';
 
     import Monitor from "lucide-svelte/icons/monitor";
     import Tablet from "lucide-svelte/icons/tablet";
@@ -12,6 +14,10 @@
 
     let selectedTab: string = $state("html");
     let selectedResolution: "desktop" | "tablet" | "mobile" = $state("desktop");
+
+    function escapeHTML(text: string) {
+        return he.decode(text);
+    }
 </script>
 
 <Tabs.Root class="w-full" bind:value={selectedTab}>
@@ -52,23 +58,33 @@
     </Tabs.Content>
     <Tabs.Content value="source">SOURCE CONTENT</Tabs.Content>
     <Tabs.Content value="text">TEXT CONTENT</Tabs.Content>
-    <Tabs.Content value="raw">RAW CONTENT</Tabs.Content>
+    <Tabs.Content value="raw">
+        <Card.Root>
+            <Card.Content>
+                <pre>{escapeHTML($mailStore.selected?.raw ?? "")}</pre>
+            </Card.Content>
+        </Card.Root>
+    </Tabs.Content>
     <Tabs.Content value="headers">
-        <Table.Root>
-            <Table.Header>
-                <Table.Row>
-                    <Table.Head>Key</Table.Head>
-                    <Table.Head>Value</Table.Head>
-                </Table.Row>
-            </Table.Header>
-            <Table.Body>
-                {#each $mailStore.selected?.headers ?? [] as header}
-                    <Table.Row>
-                        <Table.Cell>{header.key}</Table.Cell>
-                        <Table.Cell>{header.value}</Table.Cell>
-                    </Table.Row>
-                {/each}
-            </Table.Body>
-        </Table.Root>
+        <Card.Root>
+            <Card.Content>
+                <Table.Root>
+                    <Table.Header>
+                        <Table.Row>
+                            <Table.Head>Key</Table.Head>
+                            <Table.Head>Value</Table.Head>
+                        </Table.Row>
+                    </Table.Header>
+                    <Table.Body>
+                        {#each $mailStore.selected?.headers ?? [] as header}
+                            <Table.Row>
+                                <Table.Cell>{header.key}</Table.Cell>
+                                <Table.Cell>{header.value}</Table.Cell>
+                            </Table.Row>
+                        {/each}
+                    </Table.Body>
+                </Table.Root>
+            </Card.Content>
+        </Card.Root>
     </Tabs.Content>
 </Tabs.Root>

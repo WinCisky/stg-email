@@ -1,6 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import { mailStore } from "$lib/stores/accounts.js";
+    import * as Card from "$lib/components/ui/card/index.js";
 
     let shadow: ShadowRoot | null;
     let shadowHost: HTMLDivElement;
@@ -27,8 +28,8 @@
     });
 </script>
 
-<div
-    class={`mx-auto transition-all duration-500 bg-white text-card-foreground rounded-lg borde overflow-auto ${
+<Card.Root
+    class={`mx-auto transition-all duration-500 bg-white text-card-foreground overflow-auto ${
         selectedResolution === "desktop"
             ? "max-w-full"
             : selectedResolution === "tablet"
@@ -36,5 +37,7 @@
               : "max-w-[375px]"
     }`}
 >
-    <div bind:this={shadowHost}></div>
-</div>
+    <Card.Content>
+        <div bind:this={shadowHost}></div>
+    </Card.Content>
+</Card.Root>

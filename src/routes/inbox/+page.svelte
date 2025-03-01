@@ -37,7 +37,12 @@
                 const parsed = await PostalMime.parse(email.content);
                 emails.update((emails) => [
                     ...emails,
-                    { ...parsed, is_read: email.is_read == 1, id: email.id },
+                    {
+                        ...parsed,
+                        is_read: email.is_read == 1,
+                        id: email.id,
+                        raw: email.content,
+                    },
                 ]);
             }
 
@@ -61,6 +66,13 @@
 
     onMount(async () => {
         await loadMoreEmails();
+        // load second page of emails if any
+        const interval = setInterval(async () => {
+            if (!$isLoadingEmails) {
+                clearInterval(interval);
+                await loadMoreEmails();
+            }
+        }, 200);
     });
 </script>
 
