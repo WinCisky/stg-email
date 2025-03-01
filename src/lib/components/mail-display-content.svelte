@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { mode, setMode } from "mode-watcher";
     import * as Tabs from "$lib/components/ui/tabs/index.js";
     import * as ToggleGroup from "$lib/components/ui/toggle-group/index.js";
     import * as Table from "$lib/components/ui/table/index.js";
@@ -8,6 +9,8 @@
     import { basicSetup, EditorView } from "codemirror";
     import { EditorState } from "@codemirror/state";
     import { html } from "@codemirror/lang-html";
+    import { githubLight } from "@ddietr/codemirror-themes/github-light";
+    import { githubDark } from "@ddietr/codemirror-themes/github-dark";
 
     import Monitor from "lucide-svelte/icons/monitor";
     import Tablet from "lucide-svelte/icons/tablet";
@@ -50,6 +53,7 @@
                 EditorState.readOnly.of(true),
                 EditorView.editable.of(false),
                 EditorView.contentAttributes.of({ tabindex: "0" }),
+                $mode === "dark" ? githubDark : githubLight,
             ],
         });
     });

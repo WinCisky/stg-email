@@ -14,6 +14,9 @@ importers:
       '@codemirror/state':
         specifier: ^6.5.2
         version: 6.5.2
+      '@ddietr/codemirror-themes':
+        specifier: ^1.5.1
+        version: 1.5.1
       '@internationalized/date':
         specifier: ^3.7.0
         version: 3.7.0
@@ -132,6 +135,9 @@ packages:
 
   '@codemirror/view@6.36.3':
     resolution: {integrity: sha512-N2bilM47QWC8Hnx0rMdDxO2x2ImJ1FvZWXubwKgjeoOrWwEiFrtpA7SFHcuZ+o2Ze2VzbkgbzWVj4+V18LVkeg==}
+
+  '@ddietr/codemirror-themes@1.5.1':
+    resolution: {integrity: sha512-Io0zoWp0PSbDIsnBQOwaf2AIPAk/cnKI2Yc0bS8LYFQRIw5piruxj7ZlSELUCNey+g8iyRDF3j8Ef67ID7QuEA==}
 
   '@esbuild/aix-ppc64@0.24.2':
     resolution: {integrity: sha512-thpVCb/rhxE/BnMLQ7GReQLLN8q9qbHmI55F4489/ByVg2aQaQ6kbcLb6FHkocZzQhxc4gx0sCk0tJkKBFzDhA==}
@@ -1292,6 +1298,13 @@ snapshots:
       '@codemirror/state': 6.5.2
       style-mod: 4.1.2
       w3c-keyname: 2.2.8
+
+  '@ddietr/codemirror-themes@1.5.1':
+    dependencies:
+      '@codemirror/language': 6.10.8
+      '@codemirror/state': 6.5.2
+      '@codemirror/view': 6.36.3
+      '@lezer/highlight': 1.2.1
 
   '@esbuild/aix-ppc64@0.24.2':
     optional: true
