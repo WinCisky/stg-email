@@ -2,14 +2,18 @@
 	import { mailStore } from "$lib/stores/accounts.js";
 	import { cn, formatTimeAgo, stripHtml } from "$lib/utils.js";
 	import { ScrollArea } from "$lib/components/ui/scroll-area/index.js";
-	import { emails, isLoadingEmails, currentAccount } from "$lib/stores/accounts.js";
-    import { patchMarkEmailAsRead } from "$lib/api";
-    import { onMount } from "svelte";
+	import {
+		emails,
+		isLoadingEmails,
+		currentAccount,
+	} from "$lib/stores/accounts.js";
+	import { patchMarkEmailAsRead } from "$lib/api";
+	import { onMount } from "svelte";
 
 	let { isUnreadOnly, search, loadMoreEmails } = $props();
 
 	let isFetchingEmails = $state(false);
-    let hasMoreEmails = $state(true);
+	let hasMoreEmails = $state(true);
 
 	const searchedEmails = $derived.by(() => {
 		return $emails.filter((email) => {
@@ -34,38 +38,47 @@
 		if (emailIndex === -1) return;
 		// Crea una copia dell'email con is_read impostato a true
 		const updatedEmail = { ...$emails[emailIndex], is_read: true };
-    
+
 		// Crea un nuovo array di email sostituendo quella modificata
 		const updatedEmails = [
 			...$emails.slice(0, emailIndex),
 			updatedEmail,
-			...$emails.slice(emailIndex + 1)
+			...$emails.slice(emailIndex + 1),
 		];
-		
+
 		// Aggiorna lo store con il nuovo array
 		emails.set(updatedEmails);
 		// api call to update email as read in the db
 		if ($currentAccount) {
 			const email = $emails[emailIndex];
-			patchMarkEmailAsRead(email.id, $currentAccount.name, $currentAccount.password);
+			patchMarkEmailAsRead(
+				email.id,
+				$currentAccount.name,
+				$currentAccount.password,
+			);
 		}
 	}
 
 	async function onScrollbarScroll(event: { scrollBot: number }) {
-        // Carica altre email quando l'utente si avvicina al fondo della lista
-        if (event.scrollBot < 100 && !isFetchingEmails && hasMoreEmails && !$isLoadingEmails) {
-            isFetchingEmails = true;
-            
-            try {
-                const hasMore = await loadMoreEmails();
-                hasMoreEmails = hasMore;
-            } catch (error) {
-                console.error("Error loading more emails:", error);
-            } finally {
-                isFetchingEmails = false;
-            }
-        }
-    }
+		// Carica altre email quando l'utente si avvicina al fondo della lista
+		if (
+			event.scrollBot < 100 &&
+			!isFetchingEmails &&
+			hasMoreEmails &&
+			!$isLoadingEmails
+		) {
+			isFetchingEmails = true;
+
+			try {
+				const hasMore = await loadMoreEmails();
+				hasMoreEmails = hasMore;
+			} catch (error) {
+				console.error("Error loading more emails:", error);
+			} finally {
+				isFetchingEmails = false;
+			}
+		}
+	}
 </script>
 
 <div class="h-full max-h-full overflow-hidden">
@@ -93,7 +106,7 @@
 								<div class="font-semibold">
 									{email.from.name ?? email.from.address}
 								</div>
-								{#if (!email.is_read)}
+								{#if !email.is_read}
 									<span
 										class="flex h-2 w-2 rounded-full bg-blue-600"
 									></span>

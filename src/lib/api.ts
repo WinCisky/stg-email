@@ -50,3 +50,11 @@ export async function patchMarkEmailAsRead(emailId: number, username: string, pa
     }
     return response.json();
 }
+
+export async function getDeltaEmailsFromApi(username: string, password: string, id: number) {
+    const response = await fetch(`${ENDPOINT}/emails/delta?username=${username}&password=${password}&latest=${id}`);
+    if (!response.ok) {
+        throw new Error('Failed to fetch delta emails');
+    }
+    return response.json();
+}

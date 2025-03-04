@@ -3,7 +3,7 @@
 	import Search from "lucide-svelte/icons/search";
 	import * as Resizable from "$lib/components/ui/resizable/index.js";
 	import * as Tabs from "$lib/components/ui/tabs/index.js";
-    import * as Dialog from "$lib/components/ui/dialog/index.js";
+	import * as Dialog from "$lib/components/ui/dialog/index.js";
 	import { Separator } from "$lib/components/ui/separator/index.js";
 	import { Input } from "$lib/components/ui/input/index.js";
 	import MailList from "./mail-list.svelte";
@@ -14,20 +14,20 @@
 	import Flame from "lucide-svelte/icons/flame";
 	import { Button } from "$lib/components/ui/button/index.js";
 	import { currentAccount, emails, mailStore } from "$lib/stores/accounts";
-    import { postBurnAccount } from "$lib/api";
+	import { postBurnAccount } from "$lib/api";
 
-	let { loadMoreEmails } = $props();
+	let { loadMoreEmails, loadDelta } = $props();
 
 	let search = $state("");
 	let isBurnDialogOpen = $state(false);
-	
-    async function burnSelectedAccount() {
-        if (!$currentAccount) return;
-        await postBurnAccount($currentAccount.name, $currentAccount.password);
+
+	async function burnSelectedAccount() {
+		if (!$currentAccount) return;
+		await postBurnAccount($currentAccount.name, $currentAccount.password);
 		mailStore.clearMail();
-        isBurnDialogOpen = false;
+		isBurnDialogOpen = false;
 		$emails = [];
-    }
+	}
 </script>
 
 <div class="md:hidden">TODO: MOBILE</div>
@@ -44,13 +44,25 @@
 			</div>
 			<div>
 				<div class="p-2 flex flex-col space-y-2">
-					<Button variant="outline" size="icon" onclick={() => isBurnDialogOpen = true}>
+					<Button
+						variant="outline"
+						size="icon"
+						onclick={() => loadDelta()}
+					>
 						<Refresh />
 					</Button>
-					<Button variant="outline" size="icon" onclick={() => isBurnDialogOpen = true}>
+					<Button
+						variant="outline"
+						size="icon"
+						onclick={() => (isBurnDialogOpen = true)}
+					>
 						<ReadAll />
 					</Button>
-					<Button variant="outline" size="icon" onclick={() => isBurnDialogOpen = true}>
+					<Button
+						variant="outline"
+						size="icon"
+						onclick={() => (isBurnDialogOpen = true)}
+					>
 						<Flame />
 					</Button>
 				</div>
@@ -107,7 +119,7 @@
 			<MailDisplayDashboard />
 		</Resizable.Pane>
 	</Resizable.PaneGroup>
-	
+
 	<Dialog.Root bind:open={isBurnDialogOpen}>
 		<Dialog.Content>
 			<Dialog.Header>
