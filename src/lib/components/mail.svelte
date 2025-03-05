@@ -14,7 +14,7 @@
 	import Flame from "lucide-svelte/icons/flame";
 	import { Button } from "$lib/components/ui/button/index.js";
 	import { currentAccount, emails, mailStore } from "$lib/stores/accounts";
-	import { postBurnAccount } from "$lib/api";
+	import { postBurnAccount, patchReadAllEmails } from "$lib/api";
 
 	let { loadMoreEmails, loadDelta } = $props();
 
@@ -27,6 +27,14 @@
 		mailStore.clearMail();
 		isBurnDialogOpen = false;
 		$emails = [];
+	}
+
+	async function readAllEmails() {
+		if (!$currentAccount) return;
+		await patchReadAllEmails($currentAccount.name, $currentAccount.password);
+		$emails.forEach((email) => {
+			email.is_read = false;
+		});
 	}
 </script>
 
@@ -47,14 +55,14 @@
 					<Button
 						variant="outline"
 						size="icon"
-						onclick={() => loadDelta()}
+						onclick={loadDelta}
 					>
 						<Refresh />
 					</Button>
 					<Button
 						variant="outline"
 						size="icon"
-						onclick={() => (isBurnDialogOpen = true)}
+						onclick={readAllEmails}
 					>
 						<ReadAll />
 					</Button>

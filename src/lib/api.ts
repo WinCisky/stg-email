@@ -58,3 +58,17 @@ export async function getDeltaEmailsFromApi(username: string, password: string, 
     }
     return response.json();
 }
+
+export async function patchReadAllEmails(username: string, password: string) {
+    const response = await fetch(`${ENDPOINT}/emails/read/all`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({username, password})
+    });
+    if (!response.ok) {
+        throw new Error('Failed to mark all emails as read');
+    }
+    return response.json();
+}
