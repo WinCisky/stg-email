@@ -20,6 +20,7 @@
 
 	let search = $state("");
 	let isBurnDialogOpen = $state(false);
+	let isReadAllDialogOpen = $state(false);
 
 	async function burnSelectedAccount() {
 		if (!$currentAccount) return;
@@ -62,7 +63,7 @@
 					<Button
 						variant="outline"
 						size="icon"
-						onclick={readAllEmails}
+						onclick={() => (isReadAllDialogOpen = true)}
 					>
 						<ReadAll />
 					</Button>
@@ -138,6 +139,20 @@
 			</Dialog.Header>
 			<Dialog.Footer>
 				<Button onclick={() => burnSelectedAccount()}>Burn</Button>
+			</Dialog.Footer>
+		</Dialog.Content>
+	</Dialog.Root>
+
+	<Dialog.Root bind:open={isReadAllDialogOpen}>
+		<Dialog.Content>
+			<Dialog.Header>
+				<Dialog.Title>Read All Emails?</Dialog.Title>
+				<Dialog.Description>
+					This will mark all emails as read.
+				</Dialog.Description>
+			</Dialog.Header>
+			<Dialog.Footer>
+				<Button onclick={() => readAllEmails()}>Mark all as read</Button>
 			</Dialog.Footer>
 		</Dialog.Content>
 	</Dialog.Root>

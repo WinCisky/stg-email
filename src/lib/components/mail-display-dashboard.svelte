@@ -1,8 +1,11 @@
 <script lang="ts">
     import { DateFormatter } from "@internationalized/date";
+    import { base } from "$app/paths";
 
     import Trash2 from "lucide-svelte/icons/trash-2";
     import Forward from "lucide-svelte/icons/forward";
+    import Download from "lucide-svelte/icons/download";
+    import Expand from "lucide-svelte/icons/expand";
     import EllipsisVertical from "lucide-svelte/icons/ellipsis-vertical";
 
     import * as Avatar from "$lib/components/ui/avatar/index.js";
@@ -28,6 +31,25 @@
         a.download = attachment.filename ?? "attachment";
         a.click();
         URL.revokeObjectURL(url);
+    }
+
+    function downloadEmail() {
+        console.log("Download email");
+        const email = $mailStore.selected;
+        if (!email) return;
+        const blob = new Blob([email.raw], { type: "message/rfc822" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `${email.subject}.eml`;
+        a.click();
+        console.log("Downloaded email", url);
+        URL.revokeObjectURL(url);
+    }
+
+    function fullPage() {
+        if (!$mailStore.selected) return;
+        window.open(`${base}/full-page/${$mailStore.selected.id}`);
     }
 </script>
 
@@ -78,8 +100,14 @@
                     <span class="sr-only">More</span>
                 </DropdownMenu.Trigger>
                 <DropdownMenu.Content align="end">
-                    <DropdownMenu.Item>Forward</DropdownMenu.Item>
-                    <DropdownMenu.Item>Delete</DropdownMenu.Item>
+                    <DropdownMenu.Item onSelect={downloadEmail}>
+                        <Download class="mr-2 size-4" />
+                        <span>Download</span>
+                    </DropdownMenu.Item>
+                    <DropdownMenu.Item onSelect={fullPage}>
+                        <Expand class="mr-2 size-4" />
+                        <span>Full page</span>
+                    </DropdownMenu.Item>
                 </DropdownMenu.Content>
             </DropdownMenu.Root>
         </div>
