@@ -49,7 +49,7 @@
 
     function fullPage() {
         if (!$mailStore.selected) return;
-        window.open(`${base}/full-page/${$mailStore.selected.id}`);
+        window.open(`${base}/full-page?id=${$mailStore.selected.id}`);
     }
 </script>
 

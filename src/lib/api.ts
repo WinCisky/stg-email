@@ -72,3 +72,11 @@ export async function patchReadAllEmails(username: string, password: string) {
     }
     return response.json();
 }
+
+export async function getEmailFromApi(username: string, password: string, id: number) {
+    const response = await fetch(`${ENDPOINT}/emails/${id}?username=${username}&password=${password}`);
+    if (!response.ok) {
+        throw new Error('Failed to fetch email');
+    }
+    return response.json();
+}
