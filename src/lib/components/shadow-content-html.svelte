@@ -42,18 +42,24 @@
     });
 </script>
 
-<Card.Root
-    class={`mx-auto transition-all duration-500 ${
-        selectedResolution === "desktop"
-            ? "max-w-full"
-            : selectedResolution === "tablet"
-              ? "max-w-[768px]"
-              : "max-w-[375px]"
-    }`}
->
-    <Card.Content>
-        <div class="bg-white overflow-auto">
-            <div bind:this={shadowHost}></div>
-        </div>
-    </Card.Content>
-</Card.Root>
+{#if emailToShow}
+    <div class="bg-white overflow-auto">
+        <div bind:this={shadowHost}></div>
+    </div>
+{:else}
+    <Card.Root
+        class={`mx-auto transition-all duration-500 ${
+            selectedResolution === "desktop"
+                ? "max-w-full"
+                : selectedResolution === "tablet"
+                ? "max-w-[768px]"
+                : "max-w-[375px]"
+        }`}
+    >
+        <Card.Content>
+            <div class="bg-white overflow-auto">
+                <div bind:this={shadowHost}></div>
+            </div>
+        </Card.Content>
+    </Card.Root>
+{/if}
