@@ -96,16 +96,17 @@
 
     async function deleteSelectedAccount() {
         accounts.update((set) => {
-            set.forEach((account) => {
+            const newSet = new Set(accountList);
+            newSet.forEach((account) => {
                 if (
                     selectedAccount &&
                     account.name === selectedAccount.name &&
                     account.password === selectedAccount.password
                 ) {
-                    set.delete(account);
+                    newSet.delete(account);
                 }
             });
-            return set;
+            return newSet;
         });
         isDeleteDialogOpen = false;
     }
