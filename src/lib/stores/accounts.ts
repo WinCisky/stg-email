@@ -37,6 +37,23 @@ currentAccount.subscribe((value) => {
     }
 });
 
+// selectedSorting
+
+let initialSelectedSorting = null;
+
+if (browser) {
+    const storedSorting = localStorage.getItem('selectedSorting');
+    initialSelectedSorting = storedSorting ? storedSorting : 'created';
+}
+
+export const selectedSorting = writable<string | null>(initialSelectedSorting);
+
+selectedSorting.subscribe((value) => {
+    if (browser && value != null) {
+        localStorage.setItem('selectedSorting', value);
+    }
+});
+
 // mailStore
 
 type MailStore = {

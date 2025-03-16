@@ -1,29 +1,31 @@
 <script lang="ts">
     import { onDestroy, onMount } from "svelte";
-    import { toast } from "svelte-sonner";
     import type { Account, AccountCredentials } from "$lib/data.ts";
-    import Copy from "lucide-svelte/icons/copy";
-    import { accounts, currentAccount } from "$lib/stores/accounts.js";
+    import {
+        accounts,
+        currentAccount,
+        selectedSorting,
+    } from "$lib/stores/accounts.js";
     import { Button } from "$lib/components/ui/button/index.js";
     import * as Tabs from "$lib/components/ui/tabs/index.js";
-    import * as Card from "$lib/components/ui/card/index.js";
     import * as Dialog from "$lib/components/ui/dialog/index.js";
-    import { ScrollArea } from "$lib/components/ui/scroll-area/index.js";
     import AccountList from "$lib/components/account-list.svelte";
+    import ConfigurationSnippet from "$lib/components/configuration-snippet.svelte";
     import { getAccountsStatsFromApi, postBurnAccount } from "$lib/api";
     import { writable } from "svelte/store";
-    import Laravel from "$lib/assets/Laravel.svg";
+    import { Skeleton } from "$lib/components/ui/skeleton/index.js";
 
     let accountList: Account[] = $state([]);
     let account: AccountCredentials | null = $state(null);
     let isDeleteDialogOpen = $state(false);
     let isBurnDialogOpen = $state(false);
     let selectedAccount: Account | null = $state(null);
-    let codeContent = `MAIL_DRIVER=smtp
-MAIL_HOST=test.opentrust.it
-MAIL_PORT=465
-MAIL_USERNAME=username
-MAIL_PASSWORD=password`;
+
+    let createdSortedAccountList = $derived.by(() => {
+        const list = Array.from(accountList);
+        // reverse the list to show the last created account first
+        return list.reverse();
+    });
 
     let alphabeticallySortedAccountList = $derived.by(() => {
         const list = Array.from(accountList);
@@ -34,11 +36,13 @@ MAIL_PASSWORD=password`;
         const list = Array.from(accountList);
         const sorted = list.sort((a, b) => {
             if (!a.lastUpdate && !b.lastUpdate) return 0;
-            if (!a.lastUpdate) return 1;
-            if (!b.lastUpdate) return -1;
-            return (new Date(b.lastUpdate).getTime()) > (new Date(a.lastUpdate).getTime()) ? 1 : -1;
+            if (!a.lastUpdate) return -1;
+            if (!b.lastUpdate) return 1;
+            return new Date(b.lastUpdate).getTime() >
+                new Date(a.lastUpdate).getTime()
+                ? -1
+                : 1;
         });
-        console.log(sorted);
         return sorted;
     });
 
@@ -65,14 +69,6 @@ MAIL_PASSWORD=password`;
 
         updateAccountsStats();
     });
-
-    function copyToClipboard(text: string) {
-        navigator.clipboard.writeText(text);
-        toast("Copied to clipboard");
-        toast.success("Copied to clipboard", {
-            description: "The configuration has been copied to the clipboard.",
-        });
-    }
 
     async function updateAccountsStats() {
         const accountsCredentials = accountList.map((a) => {
@@ -140,37 +136,42 @@ MAIL_PASSWORD=password`;
         <div>
             <h3 class="text-xl font-bold tracking-tight mt-8">Accounts</h3>
         </div>
-        <Tabs.Root value="default" class="space-y-4">
-            <Tabs.List>
-                <Tabs.Trigger value="default">Created</Tabs.Trigger>
-				<Tabs.Trigger value="recent">Recent</Tabs.Trigger>
-                <Tabs.Trigger value="alphabetical">Name</Tabs.Trigger>
-            </Tabs.List>
-            <Tabs.Content value="default" class="space-y-4">
-                <AccountList
-                    accountList={accountList}
-                    currentTime={currentTime}
-                    openDeleteAccountAlertDialog={openDeleteAccountAlertDialog}
-                    openBurnAccountAlertDialog={openBurnAccountAlertDialog}
-                />
-            </Tabs.Content>
-            <Tabs.Content value="alphabetical" class="space-y-4">
-                <AccountList
-                    accountList={alphabeticallySortedAccountList}
-                    currentTime={currentTime}
-                    openDeleteAccountAlertDialog={openDeleteAccountAlertDialog}
-                    openBurnAccountAlertDialog={openBurnAccountAlertDialog}
-                />
-            </Tabs.Content>
-            <Tabs.Content value="recent" class="space-y-4">
-                <AccountList
-                    accountList={recentSortedAccountList}
-                    currentTime={currentTime}
-                    openDeleteAccountAlertDialog={openDeleteAccountAlertDialog}
-                    openBurnAccountAlertDialog={openBurnAccountAlertDialog}
-                />
-            </Tabs.Content>
-        </Tabs.Root>
+        {#if $selectedSorting == null}
+            <Skeleton class="h-[40px] w-[200px] rounded-full" />
+            <Skeleton class="h-[170px] w-[320px] rounded-lg" />
+        {:else}
+            <Tabs.Root bind:value={$selectedSorting} class="space-y-4">
+                <Tabs.List>
+                    <Tabs.Trigger value="created">Created</Tabs.Trigger>
+                    <Tabs.Trigger value="recent">Recent</Tabs.Trigger>
+                    <Tabs.Trigger value="alphabetical">Name</Tabs.Trigger>
+                </Tabs.List>
+                <Tabs.Content value="created" class="space-y-4">
+                    <AccountList
+                        accountList={createdSortedAccountList}
+                        {currentTime}
+                        {openDeleteAccountAlertDialog}
+                        {openBurnAccountAlertDialog}
+                    />
+                </Tabs.Content>
+                <Tabs.Content value="alphabetical" class="space-y-4">
+                    <AccountList
+                        accountList={alphabeticallySortedAccountList}
+                        {currentTime}
+                        {openDeleteAccountAlertDialog}
+                        {openBurnAccountAlertDialog}
+                    />
+                </Tabs.Content>
+                <Tabs.Content value="recent" class="space-y-4">
+                    <AccountList
+                        accountList={recentSortedAccountList}
+                        {currentTime}
+                        {openDeleteAccountAlertDialog}
+                        {openBurnAccountAlertDialog}
+                    />
+                </Tabs.Content>
+            </Tabs.Root>
+        {/if}
         <Dialog.Root bind:open={isDeleteDialogOpen}>
             <Dialog.Content>
                 <Dialog.Header>
@@ -204,35 +205,6 @@ MAIL_PASSWORD=password`;
             <h3 class="text-xl font-bold tracking-tight mt-8">Configuration</h3>
         </div>
 
-        <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            <Card.Root>
-                <Card.Header>
-                    <Card.Title>
-                        <div class="flex items-center justify-between">
-                            <div class="flex gap-2">
-                                <img
-                                    src={Laravel}
-                                    alt="Laravel"
-                                    class="h-6 w-6"
-                                />
-                                <span class="ml-2">Laravel</span>
-                            </div>
-                            <Button
-                                variant="outline"
-                                size="icon"
-                                onclick={() => copyToClipboard(codeContent)}
-                            >
-                                <Copy />
-                            </Button>
-                        </div>
-                    </Card.Title>
-                </Card.Header>
-                <Card.Content>
-                    <ScrollArea class="w-full" orientation="horizontal">
-                        <pre class="text-sm"><code>{codeContent}</code></pre>
-                    </ScrollArea>
-                </Card.Content>
-            </Card.Root>
-        </div>
+        <ConfigurationSnippet />
     </div>
 </div>
