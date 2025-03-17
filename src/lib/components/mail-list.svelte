@@ -9,6 +9,7 @@
 	} from "$lib/stores/accounts.js";
 	import { patchMarkEmailAsRead } from "$lib/api";
 	import { onMount } from "svelte";
+    import { slide } from "svelte/transition";
 
 	let { isUnreadOnly, search, loadMoreEmails } = $props();
 
@@ -90,6 +91,8 @@
 		<div class="flex flex-col gap-2 p-4 pt-0">
 			{#each emailItems as email (email.messageId)}
 				<button
+					transition:slide
+					{...slide}
 					class={cn(
 						"hover:bg-accent flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all",
 						$mailStore.selected?.messageId === email.messageId &&

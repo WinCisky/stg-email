@@ -78,12 +78,10 @@
             }
         }, 200);
         
-        window.addEventListener('blur', event => {
-            console.log('blur');
+        window.addEventListener('blur', _event => {
             handleBlur();
         });
-        window.addEventListener('focus', event => {
-            console.log('focus');
+        window.addEventListener('focus', _event => {
             handleFocus();
         });
 
