@@ -1,6 +1,6 @@
 <script lang="ts">
     import Mail from "$lib/components/mail.svelte";
-    import { onMount } from "svelte";
+    import { onDestroy, onMount } from "svelte";
     import {
         currentPageEmails,
         isLoadingEmails,
@@ -8,6 +8,9 @@
         emails,
     } from "$lib/stores/accounts.js";
     import { loadEmails, loadDeltaEmails } from "$lib/update";
+
+    let deltaInterval: number | null = null;
+    let lostFocusTimeout: number | null = null;
 
     // Esporta la funzione per renderla disponibile ai componenti figli
     export const loadMoreEmails = async () => {
@@ -34,8 +37,39 @@
         );
     };
 
-    onMount(async () => {
-        await loadMoreEmails();
+    const startDeltaInterval = (intervalMs: number) => {
+        if (deltaInterval) clearInterval(deltaInterval);
+        deltaInterval = setInterval(async () => {
+            await loadDelta();
+        }, intervalMs);
+    };
+
+    const stopDeltaInterval = () => {
+        if (deltaInterval) {
+            clearInterval(deltaInterval);
+            deltaInterval = null;
+        }
+    };
+
+    function handleFocus() {
+        if (lostFocusTimeout) {
+            clearTimeout(lostFocusTimeout);
+            lostFocusTimeout = null;
+        }
+        loadDelta(); // Call immediately when regaining focus
+        startDeltaInterval(5000); // Call every 5 seconds
+    }
+
+    function handleBlur() {
+        stopDeltaInterval();
+        lostFocusTimeout = setTimeout(() => {
+            stopDeltaInterval(); // Stop calling after 60 seconds
+        }, 60000);
+        startDeltaInterval(10000); // Call every 10 seconds
+    }
+
+    onMount(() => {
+        loadMoreEmails();
         // load second page of emails if any
         const interval = setInterval(async () => {
             if (!$isLoadingEmails) {
@@ -43,6 +77,21 @@
                 await loadMoreEmails();
             }
         }, 200);
+        
+        window.addEventListener('blur', event => {
+            console.log('blur');
+            handleBlur();
+        });
+        window.addEventListener('focus', event => {
+            console.log('focus');
+            handleFocus();
+        });
+
+        startDeltaInterval(5000);
+    });
+
+    onDestroy(() => {
+        stopDeltaInterval();
     });
 </script>
 
