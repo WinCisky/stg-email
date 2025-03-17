@@ -81,7 +81,7 @@
                             variant: "ghost",
                             size: "icon",
                         })}
-                        disabled={!$mailStore.selected}
+                        disabled={!$mailStore.selected || true}
                     >
                         <Forward class="size-4" />
                         <span class="sr-only">Forward</span>

@@ -74,9 +74,9 @@
                             {#await $currentTime}
                                 <Skeleton class="h-4 w-4 rounded-full" />
                             {:then time}
-                                {#if (time - account.lastUpdate.getTime()) / 1000 < 60}
+                                {#if (time - (new Date(account.lastUpdate)).getTime()) / 1000 < 60}
                                     <div class="h-3 w-3 rounded-full bg-green-400"></div>
-                                {:else if (time - account.lastUpdate.getTime()) / 1000 < 60 * 5}
+                                {:else if (time - (new Date(account.lastUpdate)).getTime()) / 1000 < 60 * 5}
                                     <div class="h-3 w-3 rounded-full bg-yellow-400"></div>
                                 {:else}
                                     <div class="h-3 w-3 rounded-full bg-red-400"></div>

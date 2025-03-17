@@ -35,13 +35,12 @@
     let recentSortedAccountList = $derived.by(() => {
         const list = Array.from(accountList);
         const sorted = list.sort((a, b) => {
-            if (!a.lastUpdate && !b.lastUpdate) return 0;
-            if (!a.lastUpdate) return -1;
-            if (!b.lastUpdate) return 1;
-            return new Date(b.lastUpdate).getTime() >
-                new Date(a.lastUpdate).getTime()
-                ? -1
-                : 1;
+            if (!a.last && !b.last) return 0;
+            if (!a.last) return 1;
+            if (!b.last) return -1;
+            const dateA = new Date(a.last);
+            const dateB = new Date(b.last);
+            return dateB.getTime() - dateA.getTime();
         });
         return sorted;
     });
