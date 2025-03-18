@@ -7,6 +7,7 @@
     import Download from "lucide-svelte/icons/download";
     import Expand from "lucide-svelte/icons/expand";
     import EllipsisVertical from "lucide-svelte/icons/ellipsis-vertical";
+    import Copy from "lucide-svelte/icons/copy";
 
     import * as Avatar from "$lib/components/ui/avatar/index.js";
     import { buttonVariants } from "$lib/components/ui/button/index.js";
@@ -14,10 +15,12 @@
     import { Separator } from "$lib/components/ui/separator/index.js";
     import * as Tooltip from "$lib/components/ui/tooltip/index.js";
     import { Badge } from "$lib/components/ui/badge/index.js";
+    import { Button } from "$lib/components/ui/button/index.js";
 
     import MailDisplayContent from "./mail-display-content.svelte";
     import { mailStore } from "$lib/stores/accounts.js";
     import type { Attachment } from "postal-mime";
+    import { toast } from "svelte-sonner";
 
     const fullFormatter = new DateFormatter("en-US", {
         dateStyle: "medium",
@@ -50,6 +53,14 @@
     function fullPage() {
         if (!$mailStore.selected) return;
         window.open(`${base}/full-page?id=${$mailStore.selected.id}`);
+    }
+
+    function copyToClipboard(value: string) {
+        navigator.clipboard.writeText(value);
+        toast("Copied to clipboard");
+        toast.success("Copied to clipboard", {
+            description: `${value} has been copied to the clipboard.`,
+        });
     }
 </script>
 
@@ -139,17 +150,40 @@
                             <div class="line-clamp-1 text-xs">
                                 {$mailStore.selected.subject}
                             </div>
-                            <div class="line-clamp-1 text-xs">
-                                <span class="font-medium">From:</span>
-                                {$mailStore.selected.from.address}
+                            <div
+                                class="line-clamp-1 text-xs flex items-center gap-1"
+                            >
+                                <div class="font-medium">From:</div>
+                                <Button
+                                    size="sm"
+                                    variant="link"
+                                    class="h-4 cursor-pointer p-0 text-xs"
+                                    onclick={() =>
+                                        copyToClipboard(
+                                            $mailStore.selected?.from.address ??
+                                                "",
+                                        )}
+                                >
+                                    {$mailStore.selected.from.address}
+                                    <Copy class="size-4" />
+                                </Button>
                             </div>
                             <div class="line-clamp-1 text-xs">
                                 <span class="font-medium">To:</span>
-                                {$mailStore.selected.to
-                                    ? $mailStore.selected.to
-                                          .map((to) => to.address)
-                                          .join(", ")
-                                    : ""}
+                                {#if $mailStore.selected.to}
+                                    {#each $mailStore.selected.to as to}
+                                        <Button
+                                            size="sm"
+                                            variant="link"
+                                            class="h-4 cursor-pointer p-0 text-xs"
+                                            onclick={() =>
+                                                copyToClipboard(to.address ?? '')}
+                                        >
+                                            {to.address}
+                                            <Copy class="size-4" />
+                                        </Button>
+                                    {/each}
+                                {/if}
                             </div>
                             {#if $mailStore.selected.cc}
                                 <div class="line-clamp-1 text-xs">
@@ -178,7 +212,12 @@
                             {#if $mailStore.selected.attachments.length > 0}
                                 <div class="mt-2">
                                     {#each $mailStore.selected.attachments as attachment}
-                                        <Badge class="cursor-pointer" variant="outline" onclick={() => downloadAttachment(attachment)}>
+                                        <Badge
+                                            class="cursor-pointer"
+                                            variant="outline"
+                                            onclick={() =>
+                                                downloadAttachment(attachment)}
+                                        >
                                             {attachment.filename}
                                         </Badge>
                                     {/each}

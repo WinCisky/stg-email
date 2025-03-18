@@ -6,12 +6,14 @@
 	import * as Dialog from "$lib/components/ui/dialog/index.js";
 	import { Separator } from "$lib/components/ui/separator/index.js";
 	import { Input } from "$lib/components/ui/input/index.js";
+	import { Switch } from "$lib/components/ui/switch/index.js";
 	import MailList from "./mail-list.svelte";
 	import MailDisplayDashboard from "./mail-display-dashboard.svelte";
 	import Home from "lucide-svelte/icons/home";
 	import Refresh from "lucide-svelte/icons/refresh-cw";
 	import ReadAll from "lucide-svelte/icons/mail-check";
 	import Flame from "lucide-svelte/icons/flame";
+	import Settings from "lucide-svelte/icons/settings-2";
 	import { Button } from "$lib/components/ui/button/index.js";
 	import { currentAccount, emails, mailStore } from "$lib/stores/accounts";
 	import { postBurnAccount, patchReadAllEmails } from "$lib/api";
@@ -21,6 +23,7 @@
 	let search = $state("");
 	let isBurnDialogOpen = $state(false);
 	let isReadAllDialogOpen = $state(false);
+	let isSettingsDialogOpen = $state(false);
 
 	async function burnSelectedAccount() {
 		if (!$currentAccount) return;
@@ -32,7 +35,10 @@
 
 	async function readAllEmails() {
 		if (!$currentAccount) return;
-		await patchReadAllEmails($currentAccount.name, $currentAccount.password);
+		await patchReadAllEmails(
+			$currentAccount.name,
+			$currentAccount.password,
+		);
 		$emails.forEach((email) => {
 			email.is_read = false;
 		});
@@ -53,11 +59,7 @@
 			</div>
 			<div>
 				<div class="p-2 flex flex-col space-y-2">
-					<Button
-						variant="outline"
-						size="icon"
-						onclick={loadDelta}
-					>
+					<Button variant="outline" size="icon" onclick={loadDelta}>
 						<Refresh />
 					</Button>
 					<Button
@@ -73,6 +75,14 @@
 						onclick={() => (isBurnDialogOpen = true)}
 					>
 						<Flame />
+					</Button>
+					<Button
+						variant="outline"
+						size="icon"
+						onclick={() => (isSettingsDialogOpen = true)}
+						disabled
+					>
+						<Settings />
 					</Button>
 				</div>
 			</div>
@@ -152,7 +162,31 @@
 				</Dialog.Description>
 			</Dialog.Header>
 			<Dialog.Footer>
-				<Button onclick={() => readAllEmails()}>Mark all as read</Button>
+				<Button onclick={() => readAllEmails()}>Mark all as read</Button
+				>
+			</Dialog.Footer>
+		</Dialog.Content>
+	</Dialog.Root>
+
+	<Dialog.Root bind:open={isSettingsDialogOpen}>
+		<Dialog.Content>
+			<Dialog.Header>
+				<Dialog.Title>Options</Dialog.Title>
+				<Dialog.Description>
+					<div class="flex items-center justify-between border-2 p-2 rounded-md bg-muted">
+						<div class="space-y-0.5">
+							<div class="font-bold">Search from</div>
+							<div>
+								Receive emails about new products, features, and
+								more.
+							</div>
+						</div>
+						<Switch />
+					</div>
+				</Dialog.Description>
+			</Dialog.Header>
+			<Dialog.Footer>
+				<Button onclick={() => console.log("save")}>Save</Button>
 			</Dialog.Footer>
 		</Dialog.Content>
 	</Dialog.Root>
