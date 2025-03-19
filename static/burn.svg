@@ -1,0 +1,11 @@
+<svg id="Livello_1" data-name="Livello 1" xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 467.38 445.9">
+    <defs>
+        <style>
+            .cls-1{fill:none;stroke:#000;stroke-linecap:round;stroke-linejoin:round;stroke-width:24px;}
+            @media (prefers-color-scheme: dark) {.cls-1{stroke: #fff;}}
+        </style>
+    </defs>
+    <path class="cls-1" stroke="currentColor"
+        d="M273.38,198.29c-42.1-88.32,52.25-135.15,67-146.42a44.21,44.21,0,0,0-13.19,31.51c0,24.66,20.24,44.64,45.21,44.64a45.48,45.48,0,0,0,22-5.63A93.4,93.4,0,0,1,404.57,147c5.66,23.26-3.87,47.53-23.84,61.49L248.56,279,124.35,164H61.19V394h345V263" />
+</svg>
