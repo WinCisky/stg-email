@@ -7,43 +7,19 @@
         selectedSorting,
     } from "$lib/stores/accounts.js";
     import { Button } from "$lib/components/ui/button/index.js";
-    import * as Tabs from "$lib/components/ui/tabs/index.js";
     import * as Dialog from "$lib/components/ui/dialog/index.js";
     import AccountList from "$lib/components/account-list.svelte";
     import ConfigurationSnippet from "$lib/components/configuration-snippet.svelte";
     import { getAccountsStatsFromApi, postBurnAccount } from "$lib/api";
     import { writable } from "svelte/store";
     import { Skeleton } from "$lib/components/ui/skeleton/index.js";
+    import RadioGroup from "$lib/components/radio-group.svelte";
 
     let accountList: Account[] = $state([]);
     let account: AccountCredentials | null = $state(null);
     let isDeleteDialogOpen = $state(false);
     let isBurnDialogOpen = $state(false);
     let selectedAccount: Account | null = $state(null);
-
-    let createdSortedAccountList = $derived.by(() => {
-        const list = Array.from(accountList);
-        // reverse the list to show the last created account first
-        return list.reverse();
-    });
-
-    let alphabeticallySortedAccountList = $derived.by(() => {
-        const list = Array.from(accountList);
-        return list.sort((a, b) => a.name.localeCompare(b.name));
-    });
-
-    let recentSortedAccountList = $derived.by(() => {
-        const list = Array.from(accountList);
-        const sorted = list.sort((a, b) => {
-            if (!a.last && !b.last) return 0;
-            if (!a.last) return 1;
-            if (!b.last) return -1;
-            const dateA = new Date(a.last);
-            const dateB = new Date(b.last);
-            return dateB.getTime() - dateA.getTime();
-        });
-        return sorted;
-    });
 
     const currentTime = writable(Date.now());
     const interval = setInterval(() => {
@@ -131,46 +107,27 @@
 <div class="flex flex-col">
     <div class="flex-1 space-y-4 p-8 pt-6">
         <div class="flex items-center justify-between space-y-2">
-            <h2 class="text-3xl font-bold tracking-tight">Dashboard</h2>
-        </div>
-        <div>
-            <h3 class="text-xl font-bold tracking-tight mt-8">Accounts</h3>
+            <h2 class="text-3xl font-bold tracking-tight">Accounts</h2>
         </div>
         {#if $selectedSorting == null}
             <Skeleton class="h-[40px] w-[200px] rounded-full" />
             <Skeleton class="h-[170px] w-[320px] rounded-lg" />
         {:else}
-            <Tabs.Root bind:value={$selectedSorting} class="space-y-4">
-                <Tabs.List>
-                    <Tabs.Trigger value="created">Created</Tabs.Trigger>
-                    <Tabs.Trigger value="recent">Recent</Tabs.Trigger>
-                    <Tabs.Trigger value="alphabetical">Name</Tabs.Trigger>
-                </Tabs.List>
-                <Tabs.Content value="created" class="space-y-4">
-                    <AccountList
-                        accountList={createdSortedAccountList}
-                        {currentTime}
-                        {openDeleteAccountAlertDialog}
-                        {openBurnAccountAlertDialog}
-                    />
-                </Tabs.Content>
-                <Tabs.Content value="alphabetical" class="space-y-4">
-                    <AccountList
-                        accountList={alphabeticallySortedAccountList}
-                        {currentTime}
-                        {openDeleteAccountAlertDialog}
-                        {openBurnAccountAlertDialog}
-                    />
-                </Tabs.Content>
-                <Tabs.Content value="recent" class="space-y-4">
-                    <AccountList
-                        accountList={recentSortedAccountList}
-                        {currentTime}
-                        {openDeleteAccountAlertDialog}
-                        {openBurnAccountAlertDialog}
-                    />
-                </Tabs.Content>
-            </Tabs.Root>
+            <RadioGroup
+                bind:value={$selectedSorting}
+                options={[
+                    { label: "Created", value: "created" },
+                    { label: "Recent", value: "recent" },
+                    { label: "Name", value: "alphabetical" }
+                ]}
+            />
+            <AccountList
+                accountList={accountList}
+                sortingValue={$selectedSorting}
+                {currentTime}
+                {openDeleteAccountAlertDialog}
+                {openBurnAccountAlertDialog}
+            />
         {/if}
         <Dialog.Root bind:open={isDeleteDialogOpen}>
             <Dialog.Content>
