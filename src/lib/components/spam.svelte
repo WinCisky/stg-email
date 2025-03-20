@@ -4,6 +4,7 @@
     import * as Table from "$lib/components/ui/table/index.js";
     import { Badge } from "$lib/components/ui/badge/index.js";
     import { Skeleton } from "$lib/components/ui/skeleton/index.js";
+    import { ThumbsUp, ThumbsDown } from "lucide-svelte";
 
     let spamResult: any = null;
 
@@ -66,12 +67,15 @@
             </Table.Body>
             {#if spamResult !== null && spamResult.score !== undefined}
                 <Table.Caption>
-                    Score:
-                    {#if spamResult.score >= 0}
-                        <Badge>{spamResult.score}</Badge>
-                    {:else}
-                        <Badge variant="destructive">{spamResult.score}</Badge>
-                    {/if}
+                    <div class="flex justify-center items-center gap-2">
+                        Score:
+                        <Badge variant="outline">{spamResult.score}</Badge>
+                        {#if spamResult.score >= 0}
+                            <ThumbsUp class="h-4 w-4 text-green-500" />
+                        {:else}
+                            <ThumbsDown class="h-4 w-4 text-red-500" />
+                        {/if}
+                    </div>
                 </Table.Caption>
             {/if}
         </Table.Root>

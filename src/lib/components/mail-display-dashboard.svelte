@@ -7,7 +7,6 @@
     import Download from "lucide-svelte/icons/download";
     import Expand from "lucide-svelte/icons/expand";
     import EllipsisVertical from "lucide-svelte/icons/ellipsis-vertical";
-    import Copy from "lucide-svelte/icons/copy";
 
     import * as Avatar from "$lib/components/ui/avatar/index.js";
     import { buttonVariants } from "$lib/components/ui/button/index.js";
@@ -165,7 +164,6 @@
                                         )}
                                 >
                                     {$mailStore.selected.from.address}
-                                    <Copy class="size-4" />
                                 </Button>
                             </div>
                             <div class="line-clamp-1 text-xs">
@@ -180,7 +178,6 @@
                                                 copyToClipboard(to.address ?? '')}
                                         >
                                             {to.address}
-                                            <Copy class="size-4" />
                                         </Button>
                                     {/each}
                                 {/if}
