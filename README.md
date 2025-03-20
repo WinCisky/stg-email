@@ -12,3 +12,10 @@
 ## About stg-email
 
 A simple solution for testing emails before going into production.
+
+### Work in Progress
+
+- [ ] Mobile UI
+- [ ] Email forwarding
+- [ ] Single email delete
+- [ ] Search filter settings
