@@ -45,10 +45,11 @@
 	}
 </script>
 
-<div class="md:hidden">TODO: MOBILE</div>
-<div class="hidden md:block h-screen">
+<div class="h-screen">
 	<Resizable.PaneGroup direction="horizontal">
-		<div class="flex flex-col">
+		<div
+			class="flex flex-col {$mailStore.selected ? 'hidden lg:flex' : ''}"
+		>
 			<div>
 				<div class="p-2">
 					<Button href={`${base}/`} variant="outline" size="icon">
@@ -87,8 +88,16 @@
 				</div>
 			</div>
 		</div>
-		<Separator orientation="vertical" />
-		<Resizable.Pane defaultSize={25} minSize={15} maxSize={35}>
+		<Separator
+			orientation="vertical"
+			class={$mailStore.selected ? "hidden lg:flex" : ""}
+		/>
+		<Resizable.Pane
+			defaultSize={25}
+			minSize={15}
+			maxSize={35}
+			class={$mailStore.selected ? "hidden lg:flex" : ""}
+		>
 			<Tabs.Root value="all">
 				<div class="flex items-center px-4 py-2">
 					<h1 class="text-xl font-bold">Inbox</h1>
@@ -133,8 +142,11 @@
 			</Tabs.Root>
 		</Resizable.Pane>
 
-		<Resizable.Handle withHandle />
-		<Resizable.Pane defaultSize={65}>
+		<Resizable.Handle withHandle class="hidden md:flex" />
+		<Resizable.Pane
+			defaultSize={65}
+			class={$mailStore.selected ? "" : "hidden lg:block"}
+		>
 			<MailDisplayDashboard />
 		</Resizable.Pane>
 	</Resizable.PaneGroup>
@@ -173,7 +185,9 @@
 			<Dialog.Header>
 				<Dialog.Title>Options</Dialog.Title>
 				<Dialog.Description>
-					<div class="flex items-center justify-between border-2 p-2 rounded-md bg-muted">
+					<div
+						class="flex items-center justify-between border-2 p-2 rounded-md bg-muted"
+					>
 						<div class="space-y-0.5">
 							<div class="font-bold">Search from</div>
 							<div>

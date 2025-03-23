@@ -68,7 +68,7 @@
 
 <Tabs.Root class="w-full" bind:value={selectedTab}>
     <div class="flex justify-between w-full">
-        <Tabs.List>
+        <Tabs.List class="flex flex-wrap h-auto">
             <Tabs.Trigger value="html" disabled={!$mailStore.selected?.html}>
                 Html
             </Tabs.Trigger>
@@ -84,7 +84,11 @@
         </Tabs.List>
 
         {#if selectedTab === "html"}
-            <ToggleGroup.Root type="single" bind:value={selectedResolution}>
+            <ToggleGroup.Root
+                type="single"
+                bind:value={selectedResolution}
+                class="hidden lg:flex"
+            >
                 <ToggleGroup.Item
                     value="desktop"
                     aria-label="Toggle desktop view"
@@ -128,7 +132,9 @@
     <Tabs.Content value="raw">
         <Card.Root>
             <Card.Content>
-                <pre>{escapeHTML($mailStore.selected?.raw ?? "")}</pre>
+                <pre class="overflow-auto">{escapeHTML(
+                        $mailStore.selected?.raw ?? "",
+                    )}</pre>
             </Card.Content>
         </Card.Root>
     </Tabs.Content>

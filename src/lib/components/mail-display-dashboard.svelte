@@ -7,6 +7,7 @@
     import Download from "lucide-svelte/icons/download";
     import Expand from "lucide-svelte/icons/expand";
     import EllipsisVertical from "lucide-svelte/icons/ellipsis-vertical";
+    import { ArrowLeft } from "lucide-svelte";
 
     import * as Avatar from "$lib/components/ui/avatar/index.js";
     import { buttonVariants } from "$lib/components/ui/button/index.js";
@@ -61,11 +62,32 @@
             description: `${value} has been copied to the clipboard.`,
         });
     }
+
+    function deselectEmail() {
+        mailStore.clearMail();
+    }
 </script>
 
 <Tooltip.Provider delayDuration={0}>
     <div class="flex h-full flex-col">
         <div class="flex items-center p-2">
+            <div class="flex items-center gap-2 lg:hidden">
+                <Tooltip.Root>
+                    <Tooltip.Trigger
+                        id="go_back_tooltip"
+                        class={buttonVariants({
+                            variant: "ghost",
+                            size: "icon",
+                        })}
+                        onclick={deselectEmail}
+                    >
+                        <ArrowLeft class="size-4" />
+                        <span class="sr-only">Back</span>
+                    </Tooltip.Trigger>
+                    <Tooltip.Content>Back</Tooltip.Content>
+                </Tooltip.Root>
+                <!-- <Separator orientation="vertical" class="mx-1 h-6" /> -->
+            </div>
             <div class="flex items-center gap-2">
                 <Tooltip.Root>
                     <Tooltip.Trigger
@@ -124,7 +146,7 @@
         <Separator />
         {#if $mailStore.selected}
             <div class="flex h-full flex-1 flex-col overflow-hidden">
-                <div class="flex items-start p-4">
+                <div class="flex flex-col-reverse items-start p-4 lg:flex-row">
                     <div class="flex items-start gap-4 text-sm">
                         <Avatar.Root>
                             <Avatar.Image
@@ -175,7 +197,9 @@
                                             variant="link"
                                             class="h-4 cursor-pointer p-0 text-xs"
                                             onclick={() =>
-                                                copyToClipboard(to.address ?? '')}
+                                                copyToClipboard(
+                                                    to.address ?? "",
+                                                )}
                                         >
                                             {to.address}
                                         </Button>
