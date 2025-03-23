@@ -4,8 +4,7 @@
 
 <p align="center">
     <a href="https://github.com/WinCisky/stg-email/actions"><img src="https://img.shields.io/github/actions/workflow/status/WinCisky/stg-email/deploy.yml" alt="Build Status"></a>
-    <a href="https://github.com/WinCisky/stg-email/blob/main/LICENSE"><img src="https://img.shields.io/github/license/WinCisky/stg-email
-    " alt="License"></a>
+    <a href="https://github.com/WinCisky/stg-email/blob/main/LICENSE"><img src="https://img.shields.io/github/license/WinCisky/stg-email" alt="License"></a>
 </p>
 
 
