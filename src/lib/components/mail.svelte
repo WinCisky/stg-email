@@ -17,8 +17,19 @@
 	import { Button } from "$lib/components/ui/button/index.js";
 	import { currentAccount, emails, mailStore } from "$lib/stores/accounts";
 	import { postBurnAccount, patchReadAllEmails } from "$lib/api";
+    import { writable } from "svelte/store";
+    import { onDestroy } from "svelte";
 
 	let { loadMoreEmails, loadDelta } = $props();
+
+	const currentTime = writable(Date.now());
+    const interval = setInterval(() => {
+        currentTime.set(Date.now());
+    }, 1000);
+
+    onDestroy(() => {
+        clearInterval(interval);
+    });
 
 	let search = $state("");
 	let isBurnDialogOpen = $state(false);
@@ -134,10 +145,10 @@
 					</form>
 				</div>
 				<Tabs.Content value="all" class="m-0">
-					<MailList isUnreadOnly={false} {search} {loadMoreEmails} />
+					<MailList isUnreadOnly={false} {search} {loadMoreEmails} {currentTime} />
 				</Tabs.Content>
 				<Tabs.Content value="unread" class="m-0">
-					<MailList isUnreadOnly={true} {search} {loadMoreEmails} />
+					<MailList isUnreadOnly={true} {search} {loadMoreEmails} {currentTime} />
 				</Tabs.Content>
 			</Tabs.Root>
 		</Resizable.Pane>

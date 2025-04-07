@@ -9,9 +9,9 @@
 	} from "$lib/stores/accounts.js";
 	import { patchMarkEmailAsRead } from "$lib/api";
 	import { onMount } from "svelte";
-    import { slide } from "svelte/transition";
+	import { slide } from "svelte/transition";
 
-	let { isUnreadOnly, search, loadMoreEmails } = $props();
+	let { isUnreadOnly, search, loadMoreEmails, currentTime } = $props();
 
 	let isFetchingEmails = $state(false);
 	let hasMoreEmails = $state(true);
@@ -124,7 +124,12 @@
 										: "text-muted-foreground",
 								)}
 							>
-								{formatTimeAgo(new Date(email.date ?? 0))}
+								{#await $currentTime then time}
+									{formatTimeAgo(
+										new Date(email.date ?? 0),
+										new Date(time),
+									)}
+								{/await}
 							</div>
 						</div>
 						<div class="text-xs font-medium">{email.subject}</div>
