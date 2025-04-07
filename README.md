@@ -14,7 +14,12 @@ A simple solution for testing emails before going into production.
 
 ### Work in Progress
 
-- [ ] Mobile UI
-- [ ] Email forwarding
-- [ ] Single email delete
-- [ ] Search filter settings
+- Single email delete
+- Slide animation on switch from email list to email content on mobile
+- Search filter settings
+    - Switch to search sender
+    - Switch to search receiver
+    - Switch to search email subject
+    - Switch to search email content
+- Server side search
+- Email forwarding
