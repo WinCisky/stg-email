@@ -15,7 +15,6 @@ A simple solution for testing emails before going into production.
 ### Work in Progress
 
 - Single email delete
-- Slide animation on switch from email list to email content on mobile
 - Search filter settings
     - Switch to search sender
     - Switch to search receiver

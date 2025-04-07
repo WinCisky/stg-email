@@ -17,24 +17,27 @@
 	import { Button } from "$lib/components/ui/button/index.js";
 	import { currentAccount, emails, mailStore } from "$lib/stores/accounts";
 	import { postBurnAccount, patchReadAllEmails } from "$lib/api";
-    import { writable } from "svelte/store";
-    import { onDestroy } from "svelte";
+	import { writable } from "svelte/store";
+	import { onDestroy } from "svelte";
+	import { type PaneAPI } from "paneforge";
+	import { onMount } from "svelte";
 
 	let { loadMoreEmails, loadDelta } = $props();
 
 	const currentTime = writable(Date.now());
-    const interval = setInterval(() => {
-        currentTime.set(Date.now());
-    }, 1000);
+	const interval = setInterval(() => {
+		currentTime.set(Date.now());
+	}, 1000);
 
-    onDestroy(() => {
-        clearInterval(interval);
-    });
+	onDestroy(() => {
+		clearInterval(interval);
+	});
 
 	let search = $state("");
 	let isBurnDialogOpen = $state(false);
 	let isReadAllDialogOpen = $state(false);
 	let isSettingsDialogOpen = $state(false);
+	let isMobile = $state(false);
 
 	async function burnSelectedAccount() {
 		if (!$currentAccount) return;
@@ -54,13 +57,45 @@
 			email.is_read = false;
 		});
 	}
+
+	let paneOne: PaneAPI;
+	let collapsed = $state(false);
+
+	const checkMobile = () => {
+		if (window) {
+			isMobile = window.innerWidth < 1024;
+		}
+	};
+
+	onMount(() => {
+		checkMobile();
+		if (window) {
+			window.addEventListener("resize", checkMobile);
+		}
+
+		return () => {
+			if (window) {
+				window.removeEventListener("resize", checkMobile);
+			}
+		};
+	});
+
+	$effect(() => {
+		if (!paneOne) return;
+
+		if (isMobile && $mailStore.selected && !collapsed) {
+			paneOne.collapse();
+			collapsed = true;
+		} else if (isMobile && !$mailStore.selected && collapsed) {
+			paneOne.expand();
+			collapsed = false;
+		}
+	});
 </script>
 
 <div class="h-screen">
 	<Resizable.PaneGroup direction="horizontal">
-		<div
-			class="flex flex-col {$mailStore.selected ? 'hidden lg:flex' : ''}"
-		>
+		<div class="flex flex-col">
 			<div>
 				<div class="p-2">
 					<Button href={`${base}/`} variant="outline" size="icon">
@@ -99,15 +134,16 @@
 				</div>
 			</div>
 		</div>
-		<Separator
-			orientation="vertical"
-			class={$mailStore.selected ? "hidden lg:flex" : ""}
-		/>
+		<Separator orientation="vertical" />
 		<Resizable.Pane
+			bind:this={paneOne}
+			order={1}
 			defaultSize={25}
-			minSize={15}
+			minSize={20}
 			maxSize={35}
-			class={$mailStore.selected ? "hidden lg:flex" : ""}
+			collapsedSize={0}
+			collapsible={true}
+			class="transition-all duration-300 ease-in-out lg:transition-none lg:duration-0"
 		>
 			<Tabs.Root value="all">
 				<div class="flex items-center px-4 py-2">
@@ -145,21 +181,30 @@
 					</form>
 				</div>
 				<Tabs.Content value="all" class="m-0">
-					<MailList isUnreadOnly={false} {search} {loadMoreEmails} {currentTime} />
+					<MailList
+						isUnreadOnly={false}
+						{search}
+						{loadMoreEmails}
+						{currentTime}
+					/>
 				</Tabs.Content>
 				<Tabs.Content value="unread" class="m-0">
-					<MailList isUnreadOnly={true} {search} {loadMoreEmails} {currentTime} />
+					<MailList
+						isUnreadOnly={true}
+						{search}
+						{loadMoreEmails}
+						{currentTime}
+					/>
 				</Tabs.Content>
 			</Tabs.Root>
 		</Resizable.Pane>
 
 		<Resizable.Handle withHandle class="hidden md:flex" />
-		<Resizable.Pane
-			defaultSize={65}
-			class={$mailStore.selected ? "" : "hidden lg:block"}
-		>
-			<MailDisplayDashboard />
-		</Resizable.Pane>
+		{#if !isMobile || $mailStore.selected}
+			<Resizable.Pane order={2} defaultSize={65}>
+				<MailDisplayDashboard />
+			</Resizable.Pane>
+		{/if}
 	</Resizable.PaneGroup>
 
 	<Dialog.Root bind:open={isBurnDialogOpen}>
