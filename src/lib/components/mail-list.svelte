@@ -10,24 +10,72 @@
 	import { patchMarkEmailAsRead } from "$lib/api";
 	import { onMount } from "svelte";
 	import { slide } from "svelte/transition";
+	import { type Writable } from "svelte/store";
 
-	let { isUnreadOnly, search, loadMoreEmails, currentTime } = $props();
+	let {
+		isUnreadOnly,
+		search,
+		loadMoreEmails,
+		currentTime,
+		searchFilters,
+	}: {
+		isUnreadOnly: boolean;
+		search: string;
+		loadMoreEmails: () => Promise<boolean>;
+		currentTime: Writable<number>;
+		searchFilters: {
+			sender: boolean;
+			receiver: boolean;
+			subject: boolean;
+			content: boolean;
+			attachment: boolean;
+		};
+	} = $props();
 
 	let isFetchingEmails = $state(false);
 	let hasMoreEmails = $state(true);
 
 	const searchedEmails = $derived.by(() => {
-		return $emails.filter((email) => {
-			if (!search) return true;
-			return (
-				(email.subject ?? "")
-					.toLowerCase()
-					.includes(search.toLowerCase()) ||
-				email.from.name?.toLowerCase().includes(search.toLowerCase()) ||
-				email.from.address?.toLowerCase().includes(search.toLowerCase())
-			);
-		});
-	});
+  return $emails.filter((email) => {
+    if (!search) return true;
+    
+    const searchLower = search.toLowerCase();
+    
+    if (searchFilters.subject && (email.subject ?? "").toLowerCase().includes(searchLower)) {
+      return true;
+    }
+    
+    if (searchFilters.sender && (
+      (email.from.name?.toLowerCase().includes(searchLower)) || 
+      (email.from.address?.toLowerCase().includes(searchLower))
+    )) {
+      return true;
+    }
+    
+    if (searchFilters.receiver && email.to && email.to.some(recipient => 
+      (recipient.name?.toLowerCase().includes(searchLower)) ||
+      (recipient.address?.toLowerCase().includes(searchLower))
+    )) {
+      return true;
+    }
+    
+    if (searchFilters.content) {
+      const textContent = email.text?.toLowerCase() || '';
+      const htmlContent = stripHtml(email.html ?? "").toLowerCase();
+      if (textContent.includes(searchLower) || htmlContent.includes(searchLower)) {
+        return true;
+      }
+    }
+    
+    if (searchFilters.attachment && email.attachments && email.attachments.length > 0) {
+      return email.attachments.some(attachment => 
+        (attachment.filename?.toLowerCase() || "").includes(searchLower)
+      );
+    }
+    
+    return false;
+  });
+});
 	const emailItems = $derived(
 		isUnreadOnly
 			? searchedEmails.filter((email) => !email.is_read)

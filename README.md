@@ -16,9 +16,6 @@ A simple solution for testing emails before going into production.
 
 - Single email delete
 - Search filter settings
-    - Switch to search sender
-    - Switch to search receiver
-    - Switch to search email subject
-    - Switch to search email content
+    - Store user preferences on localstorage and restore them on after page load
 - Server side search
 - Email forwarding
