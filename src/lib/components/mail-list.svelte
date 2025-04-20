@@ -21,7 +21,7 @@
 	}: {
 		isUnreadOnly: boolean;
 		search: string;
-		loadMoreEmails: () => Promise<boolean>;
+		loadMoreEmails: (unread: boolean) => Promise<boolean>;
 		currentTime: Writable<number>;
 		searchFilters: {
 			sender: boolean;
@@ -119,7 +119,7 @@
 			isFetchingEmails = true;
 
 			try {
-				const hasMore = await loadMoreEmails();
+				const hasMore = await loadMoreEmails(isUnreadOnly);
 				hasMoreEmails = hasMore;
 			} catch (error) {
 				console.error("Error loading more emails:", error);

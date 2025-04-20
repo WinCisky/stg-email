@@ -29,15 +29,9 @@
 	import { onDestroy } from "svelte";
 	import { type PaneAPI } from "paneforge";
 	import { onMount } from "svelte";
+	import { selectedSearchFilters } from "$lib/stores/accounts.js";
 
 	let { loadMoreEmails, loadDelta } = $props();
-	let searchFilters = $state({
-		sender: false,
-		receiver: false,
-		subject: true,
-		content: false,
-		attachment: false,
-	});
 
 	const currentTime = writable(Date.now());
 	const interval = setInterval(() => {
@@ -53,6 +47,7 @@
 	let isReadAllDialogOpen = $state(false);
 	let isSettingsDialogOpen = $state(false);
 	let isMobile = $state(false);
+	let selectedTab = $state("all");
 
 	async function burnSelectedAccount() {
 		if (!$currentAccount) return;
@@ -152,7 +147,7 @@
 			collapsible={true}
 			class="transition-all duration-300 ease-in-out lg:transition-none lg:duration-0"
 		>
-			<Tabs.Root value="all">
+			<Tabs.Root bind:value={selectedTab}>
 				<div class="flex items-center px-4 py-2">
 					<h1 class="text-xl font-bold">Inbox</h1>
 					<Tabs.List class="ml-auto">
@@ -200,7 +195,7 @@
 						{search}
 						{loadMoreEmails}
 						{currentTime}
-						{searchFilters}
+						searchFilters={$selectedSearchFilters}
 					/>
 				</Tabs.Content>
 				<Tabs.Content value="unread" class="m-0">
@@ -209,7 +204,7 @@
 						{search}
 						{loadMoreEmails}
 						{currentTime}
-						{searchFilters}
+						searchFilters={$selectedSearchFilters}
 					/>
 				</Tabs.Content>
 			</Tabs.Root>
@@ -262,7 +257,7 @@
 							<Send />
 							<div>Search in sender email</div>
 						</div>
-						<Switch bind:checked={searchFilters.sender} />
+						<Switch bind:checked={$selectedSearchFilters.sender} />
 					</div>
 					<Separator />
 					<div class="flex items-center justify-between">
@@ -270,7 +265,7 @@
 							<Mailbox />
 							<div>Search in receiver email</div>
 						</div>
-						<Switch bind:checked={searchFilters.receiver} />
+						<Switch bind:checked={$selectedSearchFilters.receiver} />
 					</div>
 					<Separator />
 					<div class="flex items-center justify-between">
@@ -278,7 +273,7 @@
 							<BookType />
 							<div>Search in email subject</div>
 						</div>
-						<Switch bind:checked={searchFilters.subject} />
+						<Switch bind:checked={$selectedSearchFilters.subject} />
 					</div>
 					<Separator />
 					<div class="flex items-center justify-between">
@@ -286,7 +281,7 @@
 							<BookOpenText />
 							<div>Search in email content</div>
 						</div>
-						<Switch bind:checked={searchFilters.content} />
+						<Switch bind:checked={$selectedSearchFilters.content} />
 					</div>
 					<Separator />
 					<div class="flex items-center justify-between">
@@ -294,7 +289,7 @@
 							<Paperclip />
 							<div>Search in attachment name</div>
 						</div>
-						<Switch bind:checked={searchFilters.attachment} />
+						<Switch bind:checked={$selectedSearchFilters.attachment} />
 					</div>
 				</Dialog.Description>
 			</Dialog.Header>

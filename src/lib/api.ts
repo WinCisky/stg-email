@@ -1,6 +1,7 @@
 const ENDPOINT = 'https://test.opentrust.it';
 
-export async function getEmailsFromApi(username: string, password: string, page: number = 1) {
+export async function getEmailsFromApi(username: string, password: string, page: number = 1, unread: boolean = false) {
+    // TODO: add unread filter
     const response = await fetch(`${ENDPOINT}/emails?username=${username}&password=${password}&page=${page}`);
     if (!response.ok) {
         throw new Error('Failed to fetch emails');

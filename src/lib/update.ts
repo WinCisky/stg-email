@@ -44,7 +44,7 @@ export async function loadDeltaEmails(name: string, password: string, firstId: n
     }
 }
 
-export async function loadEmails(name: string, password: string, page: number) {
+export async function loadEmails(name: string, password: string, page: number, unread: boolean) {
     if (get(isLoadingEmails)) return;
 
     try {
@@ -54,6 +54,7 @@ export async function loadEmails(name: string, password: string, page: number) {
             name,
             password,
             page,
+            unread,
         );
 
         // Se non ci sono più email da caricare

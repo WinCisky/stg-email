@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import type { Account, AccountCredentials } from '$lib/data.ts';
+import type { Account, AccountCredentials, SearchFiltersOptions } from '$lib/data.ts';
 import { browser } from '$app/environment';
 import type { Email } from '$lib/data';
 
@@ -54,6 +54,27 @@ selectedSorting.subscribe((value) => {
     }
 });
 
+// selectedSearchFilters
+let initialSelectedSearchFilters: SearchFiltersOptions = {
+    sender: false,
+    receiver: false,
+    subject: true,
+    content: false,
+    attachment: false,
+};
+if (browser) {
+    const storedSearchFilters = localStorage.getItem('selectedSearchFilters');
+    if (storedSearchFilters) {
+        initialSelectedSearchFilters = JSON.parse(storedSearchFilters);
+    }
+}
+export const selectedSearchFilters = writable<SearchFiltersOptions>(initialSelectedSearchFilters);
+selectedSearchFilters.subscribe((value) => {
+    if (browser && value != null) {
+        localStorage.setItem('selectedSearchFilters', JSON.stringify(value));
+    }
+});
+
 // mailStore
 
 type MailStore = {
@@ -76,9 +97,6 @@ function createMailStore() {
 
 export const mailStore = createMailStore();
 
-// emails
-
 export const emails = writable<Email[]>([]);
-
 export const currentPageEmails = writable(1);
 export const isLoadingEmails = writable(false);

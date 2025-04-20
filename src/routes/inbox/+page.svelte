@@ -13,11 +13,12 @@
     let lostFocusTimeout: number | null = null;
 
     // Esporta la funzione per renderla disponibile ai componenti figli
-    export const loadMoreEmails = async () => {
+    export const loadMoreEmails = async (unread: boolean) => {
         const hasMore = await loadEmails(
             $currentAccount?.name ?? "",
             $currentAccount?.password ?? "",
             $currentPageEmails,
+            unread,
         );
         if (hasMore) {
             $currentPageEmails += 1;
@@ -69,12 +70,12 @@
     }
 
     onMount(() => {
-        loadMoreEmails();
+        loadMoreEmails(false);
         // load second page of emails if any
         const interval = setInterval(async () => {
             if (!$isLoadingEmails) {
                 clearInterval(interval);
-                await loadMoreEmails();
+                await loadMoreEmails(false);
             }
         }, 200);
         
