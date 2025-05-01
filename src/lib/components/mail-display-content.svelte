@@ -60,7 +60,7 @@
                 EditorState.readOnly.of(true),
                 EditorView.editable.of(false),
                 EditorView.contentAttributes.of({ tabindex: "0" }),
-                $mode === "dark" ? githubDark : githubLight,
+                mode.current === "dark" ? githubDark : githubLight,
             ],
         });
     });

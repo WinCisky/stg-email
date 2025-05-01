@@ -14,6 +14,7 @@
     import { writable } from "svelte/store";
     import { Skeleton } from "$lib/components/ui/skeleton/index.js";
     import RadioGroup from "$lib/components/radio-group.svelte";
+    import { getGreeting } from "$lib/utils";
 
     let accountList: Account[] = $state([]);
     let account: AccountCredentials | null = $state(null);
@@ -107,7 +108,10 @@
 <div class="flex flex-col">
     <div class="flex-1 space-y-4 p-8 pt-6">
         <div class="flex items-center justify-between space-y-2">
-            <h2 class="text-3xl font-bold tracking-tight">Accounts</h2>
+            <h2 class="text-3xl font-bold tracking-tight">{ getGreeting() }</h2>
+        </div>
+        <div>
+            <h3 class="text-xl font-bold tracking-tight mt-8">Saved Accounts</h3>
         </div>
         {#if $selectedSorting == null}
             <Skeleton class="h-[40px] w-[200px] rounded-full" />
