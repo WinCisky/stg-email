@@ -15,12 +15,11 @@
     import { Separator } from "$lib/components/ui/separator/index.js";
     import * as Tooltip from "$lib/components/ui/tooltip/index.js";
     import { Badge } from "$lib/components/ui/badge/index.js";
-    import { Button } from "$lib/components/ui/button/index.js";
 
     import MailDisplayContent from "./mail-display-content.svelte";
     import { mailStore } from "$lib/stores/accounts.js";
     import type { Attachment } from "postal-mime";
-    import { toast } from "svelte-sonner";
+    import MailCopy from "./mail-copy.svelte";
 
     const fullFormatter = new DateFormatter("en-US", {
         dateStyle: "medium",
@@ -53,14 +52,6 @@
     function fullPage() {
         if (!$mailStore.selected) return;
         window.open(`${base}/full-page?id=${$mailStore.selected.id}`);
-    }
-
-    function copyToClipboard(value: string) {
-        navigator.clipboard.writeText(value);
-        toast("Copied to clipboard");
-        toast.success("Copied to clipboard", {
-            description: `${value} has been copied to the clipboard.`,
-        });
     }
 
     function deselectEmail() {
@@ -171,64 +162,38 @@
                             <div class="line-clamp-1 text-xs">
                                 {$mailStore.selected.subject}
                             </div>
-                            <div
-                                class="line-clamp-1 text-xs flex items-center gap-1"
-                            >
-                                <div class="font-medium">From:</div>
-                                <Button
-                                    size="sm"
-                                    variant="link"
-                                    class="h-4 cursor-pointer p-0 text-xs"
-                                    onclick={() =>
-                                        copyToClipboard(
-                                            $mailStore.selected?.from.address ??
-                                                "",
-                                        )}
-                                >
-                                    {$mailStore.selected.from.address}
-                                </Button>
-                            </div>
-                            <div class="line-clamp-1 text-xs">
-                                <span class="font-medium">To:</span>
-                                {#if $mailStore.selected.to}
-                                    {#each $mailStore.selected.to as to}
-                                        <Button
-                                            size="sm"
-                                            variant="link"
-                                            class="h-4 cursor-pointer p-0 text-xs"
-                                            onclick={() =>
-                                                copyToClipboard(
-                                                    to.address ?? "",
-                                                )}
-                                        >
-                                            {to.address}
-                                        </Button>
-                                    {/each}
-                                {/if}
-                            </div>
+                            {#if $mailStore.selected.from.address}
+                                <MailCopy
+                                    label="From"
+                                    emails={[{
+                                        address: $mailStore.selected.from.address,
+                                        name: $mailStore.selected.from.name,
+                                    }]}
+                                />
+                            {/if}
+                            {#if $mailStore.selected.to}
+                                <MailCopy
+                                    label="To"
+                                    emails={$mailStore.selected.to}
+                                />
+                            {/if}
                             {#if $mailStore.selected.cc}
-                                <div class="line-clamp-1 text-xs">
-                                    <span class="font-medium">Cc:</span>
-                                    {$mailStore.selected.cc
-                                        .map((cc) => cc.address)
-                                        .join(", ")}
-                                </div>
+                                <MailCopy
+                                    label="Cc"
+                                    emails={$mailStore.selected.cc}
+                                />
                             {/if}
                             {#if $mailStore.selected.bcc}
-                                <div class="line-clamp-1 text-xs">
-                                    <span class="font-medium">Bcc:</span>
-                                    {$mailStore.selected.bcc
-                                        .map((bcc) => bcc.address)
-                                        .join(", ")}
-                                </div>
+                                <MailCopy
+                                    label="Bcc"
+                                    emails={$mailStore.selected.bcc}
+                                />
                             {/if}
                             {#if $mailStore.selected.replyTo}
-                                <div class="line-clamp-1 text-xs">
-                                    <span class="font-medium">Reply-To:</span>
-                                    {$mailStore.selected.replyTo
-                                        .map((replyTo) => replyTo.address)
-                                        .join(", ")}
-                                </div>
+                                <MailCopy
+                                    label="Reply-To"
+                                    emails={$mailStore.selected.replyTo}
+                                />
                             {/if}
                             {#if $mailStore.selected.attachments.length > 0}
                                 <div class="mt-2">
