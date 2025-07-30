@@ -182,7 +182,7 @@
 						</div>
 						<div class="text-xs font-medium">{email.subject}</div>
 					</div>
-					<div class="text-muted-foreground line-clamp-2 text-xs">
+					<div class="text-muted-foreground line-clamp-2 text-xs text-ellipsis break-all">
 						{email.text
 							? email.text.substring(0, 300)
 							: stripHtml(email.html ?? "").substring(0, 300)}
