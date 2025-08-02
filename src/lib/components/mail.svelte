@@ -53,8 +53,8 @@
 		if (!$currentAccount) return;
 		await postBurnAccount($currentAccount.name, $currentAccount.password);
 		mailStore.clearMail();
-		isBurnDialogOpen = false;
 		$emails = [];
+		isBurnDialogOpen = false;
 	}
 
 	async function readAllEmails() {
@@ -64,8 +64,9 @@
 			$currentAccount.password,
 		);
 		$emails.forEach((email) => {
-			email.is_read = false;
+			email.is_read = true;
 		});
+		isReadAllDialogOpen = false;
 	}
 
 	let paneOne: PaneAPI;
@@ -219,7 +220,7 @@
 	</Resizable.PaneGroup>
 
 	<Dialog.Root bind:open={isBurnDialogOpen}>
-		<Dialog.Content>
+		<Dialog.Content class="data-[state=closed]:slide-out-to-left-0! data-[state=closed]:slide-out-to-top-0! data-[state=open]:slide-in-from-left-0! data-[state=open]:slide-in-from-top-0!">
 			<Dialog.Header>
 				<Dialog.Title>Burn Account?</Dialog.Title>
 				<Dialog.Description>
@@ -233,7 +234,7 @@
 	</Dialog.Root>
 
 	<Dialog.Root bind:open={isReadAllDialogOpen}>
-		<Dialog.Content>
+		<Dialog.Content class="data-[state=closed]:slide-out-to-left-0! data-[state=closed]:slide-out-to-top-0! data-[state=open]:slide-in-from-left-0! data-[state=open]:slide-in-from-top-0!">
 			<Dialog.Header>
 				<Dialog.Title>Read All Emails?</Dialog.Title>
 				<Dialog.Description>
@@ -248,7 +249,7 @@
 	</Dialog.Root>
 
 	<Dialog.Root bind:open={isSettingsDialogOpen}>
-		<Dialog.Content>
+		<Dialog.Content class="data-[state=closed]:slide-out-to-left-0! data-[state=closed]:slide-out-to-top-0! data-[state=open]:slide-in-from-left-0! data-[state=open]:slide-in-from-top-0!">
 			<Dialog.Header>
 				<Dialog.Title class="mb-5">Search options</Dialog.Title>
 				<Dialog.Description class="space-y-2">

@@ -134,7 +134,7 @@
             />
         {/if}
         <Dialog.Root bind:open={isDeleteDialogOpen}>
-            <Dialog.Content>
+            <Dialog.Content class="data-[state=closed]:slide-out-to-left-0! data-[state=closed]:slide-out-to-top-0! data-[state=open]:slide-in-from-left-0! data-[state=open]:slide-in-from-top-0!">
                 <Dialog.Header>
                     <Dialog.Title>Delete Account?</Dialog.Title>
                     <Dialog.Description>
@@ -149,7 +149,7 @@
             </Dialog.Content>
         </Dialog.Root>
         <Dialog.Root bind:open={isBurnDialogOpen}>
-            <Dialog.Content>
+            <Dialog.Content class="data-[state=closed]:slide-out-to-left-0! data-[state=closed]:slide-out-to-top-0! data-[state=open]:slide-in-from-left-0! data-[state=open]:slide-in-from-top-0!">
                 <Dialog.Header>
                     <Dialog.Title>Burn Account?</Dialog.Title>
                     <Dialog.Description>
