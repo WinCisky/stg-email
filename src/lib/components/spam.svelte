@@ -17,7 +17,7 @@
 
     async function checkSpam(raw: string) {
         try {
-            const response = await fetch("https://wise-pheasant-67.deno.dev", {
+            const response = await fetch("https://stg-email.simo.deno.net", {
                 method: "POST",
                 headers: {
                     Accept: "application/json",
