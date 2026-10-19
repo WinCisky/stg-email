@@ -32,8 +32,12 @@ if (browser) {
 export const currentAccount = writable<AccountCredentials | null>(initialCurrentAccount);
 
 currentAccount.subscribe((value) => {
-    if (browser && value != null) {
+    if (!browser) return;
+    if (value != null) {
         localStorage.setItem('currentAccount', JSON.stringify(value));
+    } else {
+        // e.g. the account was deleted: don't keep its credentials around
+        localStorage.removeItem('currentAccount');
     }
 });
 

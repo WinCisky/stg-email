@@ -49,8 +49,10 @@
 </script>
 
 <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-    {#each sortedAccounts as account, i (account.name + '-' + account.password)}
-        <div animate:flip={{duration:400, easing:sineInOut}}>
+    <!-- JSON key: "name-password" was ambiguous ("a-b"+"c" vs "a"+"b-c") and duplicate keys break the list -->
+    {#each sortedAccounts as account, i (JSON.stringify([account.name, account.password]))}
+        <!-- ph-no-capture: inbox names must not reach PostHog -->
+        <div class="ph-no-capture" animate:flip={{duration:400, easing:sineInOut}}>
             <Card.Root>
                 <Card.Header class="flex flex-row items-center justify-between space-y-0 pb-2">
                     <Card.Title

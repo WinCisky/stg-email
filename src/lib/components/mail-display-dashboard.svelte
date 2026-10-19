@@ -19,6 +19,7 @@
     import MailDisplayContent from "./mail-display-content.svelte";
     import { mailStore } from "$lib/stores/accounts.js";
     import type { Attachment } from "postal-mime";
+    import type { Email } from "$lib/data";
     import MailCopy from "./mail-copy.svelte";
 
     const fullFormatter = new DateFormatter("en-US", {
@@ -26,8 +27,13 @@
         timeStyle: "medium",
     });
 
+    // The From header is optional: a missing one used to crash the view
+    function senderLabel(email: Email) {
+        return email.from?.name || email.from?.address || "(no sender)";
+    }
+
     function downloadAttachment(attachment: Attachment) {
-        const url = URL.createObjectURL(new Blob([attachment.content]));
+        const url = URL.createObjectURL(new Blob([attachment.content as BlobPart]));
         const a = document.createElement("a");
         a.href = url;
         a.download = attachment.filename ?? "attachment";
@@ -136,19 +142,14 @@
         </div>
         <Separator />
         {#if $mailStore.selected}
-            <div class="flex h-full flex-1 flex-col overflow-hidden">
+            <!-- ph-no-capture: addresses, subject and content must not reach PostHog -->
+            <div class="ph-no-capture flex h-full flex-1 flex-col overflow-hidden">
                 <div class="flex flex-col-reverse items-start p-4 lg:flex-row">
                     <div class="flex items-start gap-4 text-sm">
                         <Avatar.Root>
-                            <Avatar.Image
-                                alt={$mailStore.selected.from.name ??
-                                    $mailStore.selected.from.address}
-                            />
+                            <Avatar.Image alt={senderLabel($mailStore.selected)} />
                             <Avatar.Fallback>
-                                {(
-                                    $mailStore.selected.from.name ??
-                                    $mailStore.selected.from.address
-                                )
+                                {senderLabel($mailStore.selected)
                                     .split(" ")
                                     .map((chunk) => chunk[0])
                                     .join("")}
@@ -156,13 +157,12 @@
                         </Avatar.Root>
                         <div class="grid gap-1">
                             <div class="font-semibold">
-                                {$mailStore.selected.from.name ??
-                                    $mailStore.selected.from.address}
+                                {senderLabel($mailStore.selected)}
                             </div>
                             <div class="line-clamp-1 text-xs">
                                 {$mailStore.selected.subject}
                             </div>
-                            {#if $mailStore.selected.from.address}
+                            {#if $mailStore.selected.from?.address}
                                 <MailCopy
                                     label="From"
                                     emails={[{

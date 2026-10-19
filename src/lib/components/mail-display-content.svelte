@@ -16,9 +16,9 @@
     import Tablet from "lucide-svelte/icons/tablet";
     import Smartphone from "lucide-svelte/icons/smartphone";
 
-    import ShadowContentHtml from "./shadow-content-html.svelte";
+    import EmailHtmlFrame from "./email-html-frame.svelte";
     import Spam from "./spam.svelte";
-    import { onMount } from "svelte";
+    import { onDestroy, onMount } from "svelte";
 
     let selectedTab: string = $state("html");
     let selectedResolution: "desktop" | "tablet" | "mobile" = $state("desktop");
@@ -28,7 +28,7 @@
         return he.decode(text);
     }
 
-    mailStore.subscribe((value) => {
+    const unsubscribe = mailStore.subscribe((value) => {
         if (value.selected?.text) {
             selectedTab = "text";
         }
@@ -63,6 +63,11 @@
                 mode.current === "dark" ? githubDark : githubLight,
             ],
         });
+    });
+
+    onDestroy(() => {
+        unsubscribe();
+        editorView?.destroy();
     });
 </script>
 
@@ -111,7 +116,7 @@
         {/if}
     </div>
     <Tabs.Content value="html">
-        <ShadowContentHtml {selectedResolution} />
+        <EmailHtmlFrame {selectedResolution} />
     </Tabs.Content>
     <Tabs.Content value="source">
         <Card.Root>
@@ -139,7 +144,10 @@
         </Card.Root>
     </Tabs.Content>
     <Tabs.Content value="spam">
-        <Spam />
+        <!-- The raw email is sent to the spam check service only when this tab is opened -->
+        {#if selectedTab === "spam"}
+            <Spam />
+        {/if}
     </Tabs.Content>
     <Tabs.Content value="headers">
         <Card.Root>

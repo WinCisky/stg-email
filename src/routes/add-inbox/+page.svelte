@@ -8,7 +8,7 @@
 	import { accounts } from '$lib/stores/accounts';
 	import { superForm, defaults } from 'sveltekit-superforms';
 	import { type Account } from "$lib/data";
-	import { zod } from 'sveltekit-superforms/adapters';
+	import { zod4 } from 'sveltekit-superforms/adapters';
 	import { z } from "zod";
 	import * as Form from "$lib/components/ui/form";
 	import Input from "$lib/components/ui/input/input.svelte";
@@ -22,16 +22,21 @@
     });
 
 	const formSchema = z.object({
-	        username: z.string().min(4, { message: 'Must be 3 or more characters long' }),
+	        username: z
+		        .string()
+		        .min(4, 'Must be 4 or more characters long')
+		        .max(256, 'Must be 256 characters or less')
+		        // sent as HTTP Basic credentials, whose username can't contain ":"
+		        .regex(/^[^:]*$/, 'Must not contain ":"'),
 	        password: z
 		        .string()
-		        .min(4, { message: 'Must be 8 or more characters long' })
-		        .max(50, { message: 'Must be 50 characters or less' })
+		        .min(4, 'Must be 4 or more characters long')
+		        .max(50, 'Must be 50 characters or less')
         });
 
-	const form = superForm(defaults(zod(formSchema)), {
+	const form = superForm(defaults(zod4(formSchema)), {
 		SPA: true,
-		validators: zod(formSchema),
+		validators: zod4(formSchema),
 		resetForm: false
 	});
 
@@ -57,6 +62,11 @@
 	}
 
 	function addAccount(name: string, password: string) {
+		// Already saved: adding it again would duplicate it in the list
+		if (accountList.some((account) => account.name === name && account.password === password)) {
+			window.location.href = `${base}/`;
+			return;
+		}
         const newAccount: Account = {
             name,
             password,

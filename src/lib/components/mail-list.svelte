@@ -46,8 +46,8 @@
     }
     
     if (searchFilters.sender && (
-      (email.from.name?.toLowerCase().includes(searchLower)) || 
-      (email.from.address?.toLowerCase().includes(searchLower))
+      (email.from?.name?.toLowerCase().includes(searchLower)) ||
+      (email.from?.address?.toLowerCase().includes(searchLower))
     )) {
       return true;
     }
@@ -82,8 +82,8 @@
 			: searchedEmails,
 	);
 
-	function markEmailAsRead(id: string) {
-		const emailIndex = $emails.findIndex((email) => email.messageId === id);
+	function markEmailAsRead(id: number) {
+		const emailIndex = $emails.findIndex((email) => email.id === id);
 		if (emailIndex === -1) return;
 		// Crea una copia dell'email con is_read impostato a true
 		const updatedEmail = { ...$emails[emailIndex], is_read: true };
@@ -136,26 +136,28 @@
 		orientation="vertical"
 		scroll={onScrollbarScroll}
 	>
-		<div class="flex flex-col gap-2 p-4 pt-0">
-			{#each emailItems as email (email.messageId)}
+		<!-- ph-no-capture: senders, subjects and previews must not reach PostHog (autocapture, recordings) -->
+		<div class="ph-no-capture flex flex-col gap-2 p-4 pt-0">
+			<!-- Keyed by the database id: the Message-ID comes from the email, it can be missing or duplicated -->
+			{#each emailItems as email (email.id)}
 				<button
 					transition:slide
 					{...slide}
 					class={cn(
 						"hover:bg-accent flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all",
-						$mailStore.selected?.messageId === email.messageId &&
-							"bg-muted",
+						$mailStore.selected?.id === email.id && "bg-muted",
 					)}
 					onclick={() => {
 						mailStore.setMail(email);
-						markEmailAsRead(email.messageId);
+						markEmailAsRead(email.id);
 					}}
 				>
 					<div class="flex w-full flex-col gap-1">
 						<div class="flex items-center">
 							<div class="flex items-center gap-2">
 								<div class="font-semibold">
-									{email.from.name ?? email.from.address}
+									<!-- the From header is optional: a missing one used to crash the whole list -->
+									{email.from?.name || email.from?.address || "(no sender)"}
 								</div>
 								{#if !email.is_read}
 									<span
@@ -166,8 +168,7 @@
 							<div
 								class={cn(
 									"ml-auto text-xs",
-									$mailStore.selected?.messageId ===
-										email.messageId
+									$mailStore.selected?.id === email.id
 										? "text-foreground"
 										: "text-muted-foreground",
 								)}

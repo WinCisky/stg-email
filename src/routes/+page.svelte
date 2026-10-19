@@ -50,20 +50,21 @@
         const accountsCredentials = accountList.map((a) => {
             return { username: a.name, password: a.password };
         });
-        const accountStats = await getAccountsStatsFromApi(accountsCredentials);
+        let accountStats;
+        try {
+            accountStats = await getAccountsStatsFromApi(accountsCredentials);
+        } catch (error) {
+            console.error("Error retrieving the accounts stats:", error);
+            return;
+        }
         const updatedAccountList = accountList.map((a) => {
             const stats = accountStats.find(
-                (s: {
-                    username: string;
-                    password: string;
-                    totalEmails: number;
-                    lastEmailDate: string;
-                }) => s.username === a.name && s.password === a.password,
+                (s) => s.username === a.name && s.password === a.password,
             );
             return {
                 ...a,
-                total: stats?.totalEmails,
-                last: stats?.lastEmailDate,
+                total: stats?.totalEmails ?? null,
+                last: stats?.lastEmailDate ?? null,
                 lastUpdate: new Date(),
             };
         });
@@ -71,6 +72,14 @@
     }
 
     async function deleteSelectedAccount() {
+        // Forget it as the current account too: its credentials must not stay in the browser
+        if (
+            selectedAccount &&
+            account?.name === selectedAccount.name &&
+            account?.password === selectedAccount.password
+        ) {
+            currentAccount.set(null);
+        }
         accounts.update((set) => {
             const newSet = new Set(accountList);
             newSet.forEach((account) => {

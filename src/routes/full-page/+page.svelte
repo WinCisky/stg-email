@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { currentAccount } from "$lib/stores/accounts";
-    import ShadowContentHtml from "$lib/components/shadow-content-html.svelte";
+    import EmailHtmlFrame from "$lib/components/email-html-frame.svelte";
     import { onMount } from "svelte";
     import { getEmailFromApi } from "$lib/api";
     import type { Email } from "$lib/data";
@@ -33,5 +33,5 @@
 </script>
 
 {#if email}
-    <ShadowContentHtml selectedResolution="desktop" emailToShow={email} />
+    <EmailHtmlFrame selectedResolution="desktop" emailToShow={email} />
 {/if}

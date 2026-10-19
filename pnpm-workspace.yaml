@@ -1,0 +1,6 @@
+engineStrict: true
+
+# Dependencies allowed to run install scripts (everything else is blocked)
+allowBuilds:
+  core-js: false # only prints a funding message
+  esbuild: true
